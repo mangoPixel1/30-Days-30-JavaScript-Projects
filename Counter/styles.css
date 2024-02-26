@@ -4,6 +4,13 @@
     box-sizing: border-box;
     font-family: Helvetica, Arial, sans-serif;
 }
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #F0F0F0;
+}
 
 #counter-app {
     display: flex;
@@ -13,8 +20,8 @@
     height: 350px;
     width: 350px;
     text-align: center;
-    border: 1px solid black;
-    border-radius: 10px;
+    border-radius: 15px;
+    background: white;
 }
 
 #counter-app h1 {
@@ -25,6 +32,10 @@
 .controls button {
     padding: 5px 10px;
     font-size: 2rem;
+}
+
+button {
+    border: none;
 }
 
 .decrBtn {
