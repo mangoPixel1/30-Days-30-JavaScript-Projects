@@ -7,8 +7,14 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="counter">
-        <h1>Counter</h1>
+    <div id="counter-app">
+        <h1 id="count">0</h1>
+        <div class="controls">
+            <button class="decrBtn" onclick="decrement()">-</button>
+            <button class="resetBtn" onclick="resetCount()">Reset</button>
+            <button class="incrBtn" onclick="increment()">+</button>
+        </div>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>

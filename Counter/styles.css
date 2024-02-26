@@ -4,3 +4,39 @@
     box-sizing: border-box;
     font-family: Helvetica, Arial, sans-serif;
 }
+
+#counter-app {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 350px;
+    width: 350px;
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+#counter-app h1 {
+    font-size: 6rem;
+    font-weight: 400;
+}
+
+.controls button {
+    padding: 5px 10px;
+    font-size: 2rem;
+}
+
+.decrBtn {
+    background-color: red;
+    color: white;
+}
+
+.resetBtn {
+    margin: 0 5px;
+}
+
+.incrBtn {
+    background-color: green;
+    color: white;
+}
