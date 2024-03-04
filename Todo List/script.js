@@ -39,7 +39,20 @@ function addNewTask() {
     }
 }
 
-
 // Handle adding new task to list when 'Add' button is clicked
 addBtn.addEventListener('click', addNewTask);
 
+// Mark items as completed/deleted when Complete/Delete button is clicked
+tasksList.addEventListener('click', (event) => {
+    const buttonClicked = event.target;
+    if (buttonClicked.matches('button')) {
+        if (buttonClicked.classList.contains('completeBtn')) {
+            // Access parent element
+            //buttonClicked.classList.toggle('completed');
+            alert('Task completed')
+        } else if (buttonClicked.classList.contains('deleteBtn')) {
+            alert('Task deleted');
+        }
+        
+    } 
+});
