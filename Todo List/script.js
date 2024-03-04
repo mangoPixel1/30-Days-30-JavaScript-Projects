@@ -30,9 +30,12 @@ function addNewTask() {
         deleteBtn.classList.add('deleteBtn');
         taskOptions.appendChild(deleteBtn);
         
+        // Append all newly created elements to tasks list
         newTask.appendChild(taskOptions);
         tasksList.appendChild(newTask);
-        textInputBox.value = ''; // Reset input text box
+
+        // Reset input text box
+        textInputBox.value = '';
     }
 }
 
@@ -40,4 +43,3 @@ function addNewTask() {
 // Handle adding new task to list when 'Add' button is clicked
 addBtn.addEventListener('click', addNewTask);
 
-// 
