@@ -3,6 +3,7 @@
 // What are some ways I can normalize a CSS file to ensure prevent cross-browser issues?
 // How do I use DOMContentLoaded, give me an example
 // Refactor code to use functions and instead of having function logic in the body of addEventListener()
+// Use a form to handle input???
 
 
 // HTML tag references
@@ -71,14 +72,8 @@ tasksList.addEventListener('click', (event) => {
 // Handle deleting a task when Delete button is clicked
 tasksList.addEventListener('click', (event) => {
     const buttonClicked = event.target;
-    if (buttonClicked.matches('button') && buttonClicked.classList.contains('completeBtn')) {
-        const taskText = event.target.parentElement.parentElement.firstElementChild;
+    if (buttonClicked.matches('button') && buttonClicked.classList.contains('deleteBtn')) {
+        const taskItem = event.target.parentElement.parentElement.remove();
 
-        // Toggle the line-through style 
-        if (taskText.style.textDecoration === "line-through") {
-            taskText.style.textDecoration = "none";
-        } else {
-            taskText.style.textDecoration = "line-through";
-        }
     }
 });
