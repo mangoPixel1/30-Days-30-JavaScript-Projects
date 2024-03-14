@@ -57,4 +57,10 @@ body {
 
 .completed {
     text-decoration: line-through;
+    color: lightgray;
+}
+
+.divider {
+    margin: 10px 0;
+    border: 1px solid rgb(240, 240, 240);
 }
