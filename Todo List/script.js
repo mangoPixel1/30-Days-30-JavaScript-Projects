@@ -1,8 +1,11 @@
-// DONE: How to access grandparent of an element and edit a node with no HTML tag
-// DONE: ^^^ write it using an event handler
-// What are some ways I can normalize a CSS file to ensure prevent cross-browser issues?
-// How do I use DOMContentLoaded, give me an example
-// Use a form to handle input???
+// Use a form to handle task details input
+// Edit mode for each task
+// Separate list for deleted tasks
+// Expand/Collapse lists
+// Various views: day, 3 day, week, month
+// Color themes, auto light/dark modes
+// Filter, sort by
+// Data persistence, local storage
 
 // DONE: Refactor code to use functions and instead of having function logic in the body of addEventListener()
 // Write documentation for the new functions
@@ -10,8 +13,15 @@
 // DONE: Create a new section in the HTML for the completed tasks
 // DONE: Modify the addNewTask function to add the task to the beginning of the list
 // DONE: Without providing code, give me an approach to move the completed items to the completed-tasks <div>
-// How to add a new task by pressing enter key
+// TIP: Use simpler examples to avoid copy/pasting entire code
+// DONE: How to add a new task by pressing enter key
+// DONE: My code editor is telling me that event.keycode is deprecated
+// DONE: Change divs: active tasks to <ul>; task items to <li>, keep the same classes
+// Suggest approach for implementing complex tasks: name, description, priority, tags, isCompleted
+// Show a gray border for low priority task items (default), yellow for medium, and red for high.
+// What approach could I use to identify the items in the HTML and find corresponding object?
 
+// Step 1: Create function that dynamically renders tasks list from tasks array (use iteration)
 
 
 // HTML tag references
@@ -20,6 +30,96 @@ const addBtn = document.getElementById('addBtn'); // Add button
 const tasksList = document.getElementById('active-tasks'); // Tasks list
 const completedTasksList = document.getElementById('completed-tasks'); // Completed tasks list
 
+function renderTasks() {
+    const activeTasksList = document.getElementById('active-tasks');
+    const completedTasksList = document.getElementById('completed-tasks');
+  
+    // Clear existing tasks
+    activeTasksList.innerHTML = '';
+    completedTasksList.innerHTML = '';
+  
+    // Iterate over the tasks array
+    tasks.forEach(task => {
+      // Create task item element
+      const taskItem = document.createElement('li');
+      taskItem.classList.add('taskItem');
+  
+      // Create task text element
+      const taskText = document.createElement('p');
+      taskText.classList.add('taskText');
+      taskText.textContent = task.name;
+      taskItem.appendChild(taskText);
+  
+      // Create task options element
+      const taskOptions = document.createElement('div');
+      taskOptions.classList.add('taskOptions');
+  
+      // Create complete button
+      const completeBtn = document.createElement('button');
+      completeBtn.classList.add('completeBtn');
+      completeBtn.textContent = 'Complete';
+      taskOptions.appendChild(completeBtn);
+  
+      // Create delete button
+      const deleteBtn = document.createElement('button');
+      deleteBtn.classList.add('deleteBtn');
+      deleteBtn.textContent = 'Delete';
+      taskOptions.appendChild(deleteBtn);
+  
+      taskItem.appendChild(taskOptions);
+  
+      // Append task item to the appropriate list based on completion status
+      if (task.isCompleted) {
+        taskItem.classList.toggle('completed');
+        taskItem.lastChild.remove();
+        completedTasksList.appendChild(taskItem);
+      } else {
+        activeTasksList.appendChild(taskItem);
+      }
+    });
+}
+
+const tasks = [
+    {
+        name: "Buy groceries",
+        description: "Get milk, bread, eggs, and vegetables from the supermarket",
+        priority: "medium",
+        tags: ["shopping", "household"],
+        isCompleted: false
+    },
+    {
+        name: "Finish project report",
+        description: "Complete the project report and submit it to the manager",
+        priority: "high",
+        tags: ["work", "urgent"],
+        isCompleted: false
+    },
+    {
+        name: "Call dentist",
+        description: "Schedule a dental checkup appointment",
+        priority: "low",
+        tags: ["health", "personal"],
+        isCompleted: true
+    },
+    {
+        name: "Clean the house",
+        description: "Vacuum the floors, dust the furniture, and do the laundry",
+        priority: "medium",
+        tags: ["household", "cleaning"],
+        isCompleted: false
+    },
+    {
+        name: "Go for a run",
+        description: "Run 5 kilometers in the park",
+        priority: "low",
+        tags: ["exercise", "health"],
+        isCompleted: false
+    }
+];
+
+renderTasks();
+
+/*
 // Function to handle adding a new task to the list
 function addNewTask() {
     // Check if text box contains text
@@ -29,7 +129,7 @@ function addNewTask() {
     }
 
     // Create new task item <div>
-    const newTask = document.createElement('div');
+    const newTask = document.createElement('li');
     newTask.classList.add('taskItem');
 
     // Create new task text <p>
@@ -92,11 +192,19 @@ function deleteTask(event) {
     }
 }
 
-// Event listener for adding a new task
+// Event listener for adding a new task (Add button)
 addBtn.addEventListener('click', addNewTask);
+
+// Event listener for adding a new task (Enter key press)
+textInputBox.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.keyCode === 13) {
+        addNewTask();
+    }
+});
 
 // Event listener for marking a task as complete
 tasksList.addEventListener('click', completeTask);
 
 // Event listener for deleting a task
 tasksList.addEventListener('click', deleteTask);
+*/

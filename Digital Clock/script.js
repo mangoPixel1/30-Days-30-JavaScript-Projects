@@ -1,15 +1,16 @@
 // VS Code: How to sort files by date created in Explorer
-
-/*window.onload = () => {
-    updateClock();
-};*/
-
+// How accurate is 
+// How to add leading zeros
+// Get AM and PM and display in 12 hour format
+// Create button for toggling between 12/24 hour format
+// Light/Dark mode toggle
+// How to prevent theme from flashing 
 
 updateClock = () => {
     let date = new Date();
-    h = date.getHours();
-    m = date.getMinutes();
-    s = date.getSeconds();
+    h = date.getHours().toString().padStart(2, 0);
+    m = date.getMinutes().toString().padStart(2, 0);
+    s = date.getSeconds().toString().padStart(2, 0);
 
     d = date.getDay();
     mn = date.getMonth();

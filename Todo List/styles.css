@@ -11,6 +11,12 @@ body {
     background: rgb(233, 233, 233);
 }
 
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
 #container {
     margin-top: 50px;
     padding: 25px 30px 30px 30px;
