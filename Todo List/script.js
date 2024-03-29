@@ -17,18 +17,20 @@
 // DONE: My code editor is telling me that event.keycode is deprecated
 // DONE: Change divs: active tasks to <ul>; task items to <li>, keep the same classes
 // DONE: Suggest approach for implementing complex tasks: name, description, priority, tags, isCompleted
-// Show a gray border for low priority task items (default), yellow for medium, and red for high.
-// What approach could I use to identify the items in the HTML and find corresponding object?
-
-// IS IT good practice TO USE A CSS CLASS OR UPDATE THE STYLING IN THE SCRIPT FOR THIS CASE?
-
-// Step 1: Create function that dynamically renders tasks list from tasks array (use iteration)
+// DONE: Show a gray border for low priority task items (default), yellow for medium, and red for high.
+// DONE: Is it good practice to use a CSS class or update the styling in the script for this case?
+// DONE: Create function that dynamically renders tasks list from tasks array (use iteration)
+// When I highlight text in the description textarea and click and hold while moving the cursor away from the container and let go, the new task options go away.
+// How to add event listeners to multiple elements (tags) to remove when clicked.
+// Display x when hovering over a tag
 
 
 // HTML tag references
 const textInputBox = document.getElementById('newTaskInput'); // New task input
 const addBtn = document.getElementById('addBtn'); // Add button
-const newTaskOptions = document.getElementById('newTaskOptions');
+
+const newTaskOptions = document.getElementById('newTaskOptions'); // Options when adding new task (priority, description, tags)
+const addTagBtn = document.getElementById('addTagBtn'); // Add tag button
 
 const tasksList = document.getElementById('active-tasks'); // Tasks list
 const completedTasksList = document.getElementById('completed-tasks'); // Completed tasks list
@@ -50,14 +52,20 @@ function addNewTask() {
     // Add the new task object to the tasks array
     tasks.push(newTask);
 
-    // Clear the input box
+    // Clear the input fields
     textInputBox.value = "";
+    document.getElementById('low-priority').checked = false;
+    document.getElementById('medium-priority').checked = false;
+    document.getElementById('high-priority').checked = false;
+    document.getElementById('taskDescriptionInput').value = "";
+    document.getElementById('tagsInput').value = "";
 
     // Re-render the tasks
     renderTasks();
 
 }
 
+// Returns name of CSS class
 function getPriorityColor(priority) {
     switch (priority) {
         case "low":
@@ -125,6 +133,19 @@ function renderTasks() {
     });
 }
 
+// Render the tags from currentTags array into HTML
+function renderCurrentTags() {
+    const tagsInputList = document.getElementById('tagsInputList');
+    tagsInputList.innerHTML = '';
+
+    currentTags.forEach(tag => {
+        const newTag = document.createElement('li');
+        newTag.classList.add('tag');
+        newTag.textContent = tag;
+        tagsInputList.appendChild(newTag);
+    });
+}
+
 
 
 // Add new task when add button is clicked
@@ -141,6 +162,23 @@ document.addEventListener('click', function(event) {
       newTaskOptions.style.display = 'none';
     }
 });
+
+// Add a new tag when add tag button is clicked
+addTagBtn.addEventListener('click', () => {
+    const tagsInput = document.getElementById('tagsInput');
+    const tagName = tagsInput.value.trim(); // Remove unnecessary whitespace
+
+    if (tagName != '') {
+        currentTags.push(tagName);
+        renderCurrentTags();
+    }
+
+    // Clear input field
+    tagsInput.value = '';
+});
+
+
+const currentTags = [];
 
 const tasks = [
     /*{

@@ -15,16 +15,22 @@
         </div>
 
         <div id="newTaskOptions">
+            <p class="label">Priority</p>
             <input type="radio" id="low-priority" name="priorityOptions" value="Low">
             <label for="low-priority">Low</label>
             <input type="radio" id="medium-priority" name="priorityOptions" value="Medium">
             <label for="medium-priority">Medium</label>
             <input type="radio" id="high-priority" name="priorityOptions" value="High">
-            <label for="high-priority">High</label><br>
+            <label for="high-priority">High</label><br><br>
 
-            <input type="text" id="taskDescriptionInput" placeholder="Write a description for this task"><br>
+            <p class="label">Description</p>
+            <textarea id="taskDescriptionInput" placeholder="Write a description for this task"></textarea><br><br>
+            
+            <p class="label">Tags</p>
             <input type="text" id="tagsInput" placeholder="Work, school, health, etc."><button id="addTagBtn">Add Tag</button>
-            <ul id="tagsInputList"></ul>
+            <ul id="tagsInputList">
+                <!-- <li class="tag">example-tag</li> -->
+            </ul>
         </div>
         
         <ul id="active-tasks"></ul>
