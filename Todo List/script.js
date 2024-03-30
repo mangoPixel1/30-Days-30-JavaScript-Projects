@@ -30,6 +30,7 @@ const textInputBox = document.getElementById('newTaskInput'); // New task input
 const addBtn = document.getElementById('addBtn'); // Add button
 
 const newTaskOptions = document.getElementById('newTaskOptions'); // Options when adding new task (priority, description, tags)
+const tagsInput = document.getElementById('tagsInput'); // Tag input textbox
 const addTagBtn = document.getElementById('addTagBtn'); // Add tag button
 
 const tasksList = document.getElementById('active-tasks'); // Tasks list
@@ -77,6 +78,19 @@ function getPriorityColor(priority) {
         default:
             return "priority-default";
     }
+}
+
+function addNewTag() {
+    const tagsInput = document.getElementById('tagsInput');
+    const tagName = tagsInput.value.trim(); // Remove unnecessary whitespace
+
+    if (tagName != '') {
+        currentTags.push(tagName);
+        renderCurrentTags();
+    }
+
+    // Clear input field
+    tagsInput.value = '';
 }
 
 // Render the tasks from array into HTML elements
@@ -151,6 +165,13 @@ function renderCurrentTags() {
 // Add new task when add button is clicked
 addBtn.addEventListener('click', addNewTask);
 
+// Add new task when Enter key is pressed
+textInputBox.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.keyCode === 13) {
+        addNewTask();
+    }
+});
+
 // Display options when input box is selected
 textInputBox.addEventListener('focus', () => {
     newTaskOptions.style.display = 'block';
@@ -164,17 +185,13 @@ document.addEventListener('click', function(event) {
 });
 
 // Add a new tag when add tag button is clicked
-addTagBtn.addEventListener('click', () => {
-    const tagsInput = document.getElementById('tagsInput');
-    const tagName = tagsInput.value.trim(); // Remove unnecessary whitespace
+addTagBtn.addEventListener('click', addNewTag);
 
-    if (tagName != '') {
-        currentTags.push(tagName);
-        renderCurrentTags();
+// Add a new tag when Enter key is pressed
+tagsInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.keyCode === 13) {
+        addNewTag();
     }
-
-    // Clear input field
-    tagsInput.value = '';
 });
 
 
