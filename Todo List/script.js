@@ -20,9 +20,12 @@
 // DONE: Show a gray border for low priority task items (default), yellow for medium, and red for high.
 // DONE: Is it good practice to use a CSS class or update the styling in the script for this case?
 // DONE: Create function that dynamically renders tasks list from tasks array (use iteration)
+
+// How to get value of radio buttons
 // When I highlight text in the description textarea and click and hold while moving the cursor away from the container and let go, the new task options go away.
-// How to add event listeners to multiple elements (tags) to remove when clicked.
 // Display x when hovering over a tag
+// How to add event listeners to multiple elements (tags) to remove when clicked.
+
 
 
 // HTML tag references
@@ -30,6 +33,7 @@ const textInputBox = document.getElementById('newTaskInput'); // New task input
 const addBtn = document.getElementById('addBtn'); // Add button
 
 const newTaskOptions = document.getElementById('newTaskOptions'); // Options when adding new task (priority, description, tags)
+const taskDescriptionInput = document.getElementById('taskDescriptionInput'); // Description textarea
 const tagsInput = document.getElementById('tagsInput'); // Tag input textbox
 const addTagBtn = document.getElementById('addTagBtn'); // Add tag button
 
@@ -44,9 +48,9 @@ function addNewTask() {
     // Create a new task object
     const newTask = {
         name: textInputBox.value,
-        description: "",
+        description: taskDescriptionInput.value,
         priority: "",
-        tags: [],
+        tags: currentTags,
         isCompleted: false
     };
 
@@ -198,7 +202,7 @@ tagsInput.addEventListener('keydown', (event) => {
 const currentTags = [];
 
 const tasks = [
-    /*{
+    {
         name: "Buy groceries",
         description: "Get milk, bread, eggs, and vegetables from the supermarket",
         priority: "medium",
@@ -232,7 +236,7 @@ const tasks = [
         priority: "low",
         tags: ["exercise", "health"],
         isCompleted: false
-    }*/
+    }
 ];
 
 renderTasks();
