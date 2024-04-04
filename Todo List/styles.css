@@ -127,10 +127,26 @@ ul {
 }
 
 .tag {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     background-color: #e7e7e7;
     padding: 5px;
     margin-right: 5px;
     border-radius: 3px;
     user-select: none;
+}
+
+.tag-text {
+    margin-right: 5px;
+}
+
+.tag-remove {
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    color: #888;
+}
+
+.tag-remove:hover {
+    color: #000;
 }

@@ -1,3 +1,5 @@
+/*  FUTURE FEATURES TO IMPLEMENT  */
+
 // Use a form to handle task details input
 // Edit mode for each task
 // Separate list for deleted tasks
@@ -6,6 +8,8 @@
 // Color themes, auto light/dark modes
 // Filter, sort by
 // Data persistence, local storage
+
+/*  AI Prompts for DataAnnotation  */
 
 // DONE: Refactor code to use functions and instead of having function logic in the body of addEventListener()
 // DONE: Convert complete task functionality using the toggle() method for the class "complete"
@@ -21,10 +25,16 @@
 // DONE: Is it good practice to use a CSS class or update the styling in the script for this case?
 // DONE: Create function that dynamically renders tasks list from tasks array (use iteration)
 
-// How to get value of radio buttons
-// When I highlight text in the description textarea and click and hold while moving the cursor away from the container and let go, the new task options go away.
+// DONE: How to get value of radio buttons
+// DONE: New task not displaying priority color
+// DONE: Use a more concise way to set the priority value within the definition of newTask object
+// DONE: When I highlight text in the description textarea and click and hold while moving the cursor away from the container and let go, the new task options go away.
+// DONE: When adding tags, add a hyphen in place of spaces for the tags input field
 // Display x when hovering over a tag
 // How to add event listeners to multiple elements (tags) to remove when clicked.
+// Display task details when task gets clicked
+// Set max length for description textarea
+
 
 
 
@@ -45,11 +55,12 @@ function addNewTask() {
     if (textInputBox.value == "") {
         return;
     }
+
     // Create a new task object
     const newTask = {
         name: textInputBox.value,
         description: taskDescriptionInput.value,
-        priority: "",
+        priority: document.querySelector('input[name="priorityOptions"]:checked')?.value || "",
         tags: currentTags,
         isCompleted: false
     };
@@ -65,8 +76,15 @@ function addNewTask() {
     document.getElementById('taskDescriptionInput').value = "";
     document.getElementById('tagsInput').value = "";
 
+    // Clear the currentTags array
+    currentTags.length = 0;
+
     // Re-render the tasks
     renderTasks();
+
+    // Re-render the cleared currentTags array
+    renderCurrentTags();
+
 
 }
 
@@ -88,8 +106,18 @@ function addNewTag() {
     const tagsInput = document.getElementById('tagsInput');
     const tagName = tagsInput.value.trim(); // Remove unnecessary whitespace
 
-    if (tagName != '') {
-        currentTags.push(tagName);
+    // Validate input: only letters and hyphens allowed
+    if (!/^[a-zA-Z\s-]+$/.test(tagName)) {
+        alert("Invalid input: Only letters and hyphens are allowed.");
+        tagsInput.value = '';
+        return;
+    }
+
+    // Replace spaces with hyphens and convert to lowercase
+    const formattedTagName = tagName.replace(/\s+/g, '-').toLowerCase();
+
+    if (formattedTagName !== '') {
+        currentTags.push(formattedTagName);
         renderCurrentTags();
     }
 
@@ -151,6 +179,29 @@ function renderTasks() {
     });
 }
 
+/*// Render the tags from currentTags array into HTML
+function renderCurrentTags() {
+    const tagsInputList = document.getElementById('tagsInputList');
+    tagsInputList.innerHTML = '';
+
+    currentTags.forEach(tag => {
+        const newTag = document.createElement('li');
+        newTag.classList.add('tag');
+
+        const tagText = document.createElement('span');
+        tagText.classList.add('tag-text');
+        tagText.textContent = tag;
+        newTag.appendChild(tagText);
+
+        const removeIcon = document.createElement('span');
+        removeIcon.classList.add('tag-remove');
+        removeIcon.innerHTML = '&times;';
+        newTag.appendChild(removeIcon);
+
+        tagsInputList.appendChild(newTag);
+    });
+}*/
+
 // Render the tags from currentTags array into HTML
 function renderCurrentTags() {
     const tagsInputList = document.getElementById('tagsInputList');
@@ -159,7 +210,25 @@ function renderCurrentTags() {
     currentTags.forEach(tag => {
         const newTag = document.createElement('li');
         newTag.classList.add('tag');
-        newTag.textContent = tag;
+
+        const tagText = document.createElement('span');
+        tagText.classList.add('tag-text');
+        tagText.textContent = tag;
+
+        const removeIcon = document.createElement('span');
+        removeIcon.classList.add('tag-remove');
+        removeIcon.innerHTML = '&times;';
+        removeIcon.addEventListener('click', () => {
+            // Remove the tag from the currentTags array
+            const index = currentTags.indexOf(tag);
+            if (index !== -1) {
+                currentTags.splice(index, 1);
+                renderCurrentTags();
+            }
+        });
+
+        newTag.appendChild(tagText);
+        newTag.appendChild(removeIcon);
         tagsInputList.appendChild(newTag);
     });
 }
@@ -180,13 +249,30 @@ textInputBox.addEventListener('keydown', (event) => {
 textInputBox.addEventListener('focus', () => {
     newTaskOptions.style.display = 'block';
 });
-// Hide options when input box is NOT selected
+
+// Hide options when the add button is clicked
+document.getElementById('addBtn').addEventListener('click', function() {
+    newTaskOptions.style.display = 'none';
+});
+
+// Hide options when both the newTaskInput and taskDescriptionInput lose focus
 document.addEventListener('click', function(event) {
     const target = event.target;
-    if (!newTaskOptions.contains(target) && target !== newTaskInput) {
-      newTaskOptions.style.display = 'none';
+    const container = document.getElementById('container');
+
+    if (!container.contains(target)) {
+        textInputBox.addEventListener('blur', hideOptions);
+        taskDescriptionInput.addEventListener('blur', hideOptions);
     }
 });
+
+function hideOptions() {
+    if (document.activeElement !== textInputBox && document.activeElement !== taskDescriptionInput) {
+        newTaskOptions.style.display = 'none';
+        textInputBox.removeEventListener('blur', hideOptions);
+        taskDescriptionInput.removeEventListener('blur', hideOptions);
+    }
+}
 
 // Add a new tag when add tag button is clicked
 addTagBtn.addEventListener('click', addNewTag);
@@ -202,7 +288,7 @@ tagsInput.addEventListener('keydown', (event) => {
 const currentTags = [];
 
 const tasks = [
-    {
+    /*{
         name: "Buy groceries",
         description: "Get milk, bread, eggs, and vegetables from the supermarket",
         priority: "medium",
@@ -236,7 +322,7 @@ const tasks = [
         priority: "low",
         tags: ["exercise", "health"],
         isCompleted: false
-    }
+    }*/
 ];
 
 renderTasks();
