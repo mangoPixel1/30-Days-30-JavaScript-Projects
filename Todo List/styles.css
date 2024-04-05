@@ -31,9 +31,51 @@ ul {
     margin: 15px 0;
 }
 
+.input-container {
+    display: flex;
+    align-items: center;
+}
+
 #newTaskInput {
     padding: 8px;
     width: 85%;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid #575757;
+    border-radius: 4px;
+    padding: 0;
+    margin-right: 5px;
+    width: 100%;
+}
+
+#newTaskInput {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 0 10px;
+    font-size: 14px;
+}
+
+#clearBtn {
+    padding: 0;
+    font-size: 28px;
+    color: rgb(142, 142, 142);
+    background-color: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+}
+
+#clearBtn:hover {
+    background-color: rgb(238, 238, 238);
 }
 
 #newTaskOptions {
@@ -110,7 +152,28 @@ ul {
     height: 80px;
     padding: 8px;
     resize: vertical;
+    outline: none;
 }
+
+.description-input {
+    outline: none;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+.description-input.max-length {
+    border-color: red;
+}
+
+/*#taskDescriptionInput:focus {
+    border: 1px solid #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+#taskDescriptionInput.max-length {
+    border: 1px solid red;
+    box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25);
+}*/
 
 #tagsInput {
     padding: 8px;
@@ -150,3 +213,4 @@ ul {
 .tag-remove:hover {
     color: #000;
 }
+

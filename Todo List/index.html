@@ -11,7 +11,10 @@
         <h1>Todo List</h1>
         
         <div id="addNewTask">
-            <input type="text" id="newTaskInput" placeholder="New task">
+            <div class="input-container">
+                <input type="text" id="newTaskInput" placeholder="New task">
+                <button id="clearBtn">&times;</button>
+            </div>
             <button id="addBtn">Add</button>
         </div>
 
@@ -25,7 +28,7 @@
             <label for="high-priority">High</label><br><br>
 
             <p class="label">Description</p>
-            <textarea id="taskDescriptionInput" placeholder="Write a description for this task"></textarea><br><br>
+            <textarea id="taskDescriptionInput" class="description-input" placeholder="Write a description for this task" maxlength="200"></textarea><br><br>
             
             <p class="label">Tags</p>
             <input type="text" id="tagsInput" placeholder="Work, school, health, etc."><button id="addTagBtn">Add Tag</button>

@@ -30,16 +30,21 @@
 // DONE: Use a more concise way to set the priority value within the definition of newTask object
 // DONE: When I highlight text in the description textarea and click and hold while moving the cursor away from the container and let go, the new task options go away.
 // DONE: When adding tags, add a hyphen in place of spaces for the tags input field
-// Display x when hovering over a tag
-// How to add event listeners to multiple elements (tags) to remove when clicked.
+// DONE: Display x when hovering over a tag
+// DONE: How to add event listeners to multiple elements (tags) to remove when clicked.
+// DONE: Place the clearBtn inside the newTaskOptions input field
+// DONE: Display newTaskOptions when text is entered in newTaskInput
 // Display task details when task gets clicked
 // Set max length for description textarea
+// Word counter for textarea
+// Display red border when exceeds character limit
 
 
 
 
 // HTML tag references
 const textInputBox = document.getElementById('newTaskInput'); // New task input
+const clearBtn = document.getElementById('clearBtn'); // Clear button (x)
 const addBtn = document.getElementById('addBtn'); // Add button
 
 const newTaskOptions = document.getElementById('newTaskOptions'); // Options when adding new task (priority, description, tags)
@@ -179,29 +184,6 @@ function renderTasks() {
     });
 }
 
-/*// Render the tags from currentTags array into HTML
-function renderCurrentTags() {
-    const tagsInputList = document.getElementById('tagsInputList');
-    tagsInputList.innerHTML = '';
-
-    currentTags.forEach(tag => {
-        const newTag = document.createElement('li');
-        newTag.classList.add('tag');
-
-        const tagText = document.createElement('span');
-        tagText.classList.add('tag-text');
-        tagText.textContent = tag;
-        newTag.appendChild(tagText);
-
-        const removeIcon = document.createElement('span');
-        removeIcon.classList.add('tag-remove');
-        removeIcon.innerHTML = '&times;';
-        newTag.appendChild(removeIcon);
-
-        tagsInputList.appendChild(newTag);
-    });
-}*/
-
 // Render the tags from currentTags array into HTML
 function renderCurrentTags() {
     const tagsInputList = document.getElementById('tagsInputList');
@@ -245,34 +227,42 @@ textInputBox.addEventListener('keydown', (event) => {
     }
 });
 
-// Display options when input box is selected
-textInputBox.addEventListener('focus', () => {
-    newTaskOptions.style.display = 'block';
+// Display options when input box has text
+textInputBox.addEventListener('input', () => {
+    if (textInputBox.value.trim() !== '') {
+        newTaskOptions.style.display = 'block';
+    } else {
+        newTaskOptions.style.display = 'none';
+    }
 });
 
-// Hide options when the add button is clicked
-document.getElementById('addBtn').addEventListener('click', function() {
+// Hide options when the clear button is clicked
+clearBtn.addEventListener('click', () => {
+    textInputBox.value = '';
     newTaskOptions.style.display = 'none';
 });
 
-// Hide options when both the newTaskInput and taskDescriptionInput lose focus
-document.addEventListener('click', function(event) {
-    const target = event.target;
-    const container = document.getElementById('container');
+// Hide options when the add button is clicked
+document.getElementById('addBtn').addEventListener('click', () => {
+    newTaskOptions.style.display = 'none';
+});
 
-    if (!container.contains(target)) {
-        textInputBox.addEventListener('blur', hideOptions);
-        taskDescriptionInput.addEventListener('blur', hideOptions);
+taskDescriptionInput.addEventListener('input', () => {
+    if (taskDescriptionInput.value.length >= 200) {
+        taskDescriptionInput.classList.add('max-length');
+    } else {
+        taskDescriptionInput.classList.remove('max-length');
     }
 });
 
-function hideOptions() {
-    if (document.activeElement !== textInputBox && document.activeElement !== taskDescriptionInput) {
-        newTaskOptions.style.display = 'none';
-        textInputBox.removeEventListener('blur', hideOptions);
-        taskDescriptionInput.removeEventListener('blur', hideOptions);
+/*
+taskDescriptionInput.addEventListener('input', () => {
+    if (taskDescriptionInput.value.length >= 200) {
+        taskDescriptionInput.classList.add('max-length');
+    } else {
+        taskDescriptionInput.classList.remove('max-length');
     }
-}
+});*/
 
 // Add a new tag when add tag button is clicked
 addTagBtn.addEventListener('click', addNewTag);
