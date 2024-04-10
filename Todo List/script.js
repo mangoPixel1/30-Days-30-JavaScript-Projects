@@ -34,10 +34,15 @@
 // DONE: How to add event listeners to multiple elements (tags) to remove when clicked.
 // DONE: Place the clearBtn inside the newTaskOptions input field
 // DONE: Display newTaskOptions when text is entered in newTaskInput
-// Display task details when task gets clicked
-// Set max length for description textarea
-// Word counter for textarea
-// Display red border when exceeds character limit
+// DONE: Set max length for description textarea
+// DONE: Display red border when exceeds character limit
+
+// DONE: Explain why the corners are missing, causes, etc.
+// Character counter for description textarea
+// Desribe an approach to display task details when task gets clicked
+
+// Come up with prompt ideas for other JS topics
+// Watch JS tutorials
 
 
 
@@ -236,10 +241,20 @@ textInputBox.addEventListener('input', () => {
     }
 });
 
-// Hide options when the clear button is clicked
+// Hide options and clear button when the clear button is clicked
 clearBtn.addEventListener('click', () => {
     textInputBox.value = '';
     newTaskOptions.style.display = 'none';
+    clearBtn.style.display = 'none'; // Hide clear button
+});
+
+// Show clear button when needed (e.g., when input box has text)
+textInputBox.addEventListener('input', () => {
+    if (textInputBox.value.trim() !== '') {
+        clearBtn.style.display = 'flex'; // Show clear button
+    } else {
+        clearBtn.style.display = 'none'; // Hide clear button
+    }
 });
 
 // Hide options when the add button is clicked
@@ -247,11 +262,18 @@ document.getElementById('addBtn').addEventListener('click', () => {
     newTaskOptions.style.display = 'none';
 });
 
+// Update character count and display red border when input exceeds character limit
+const currentCount = document.querySelector('.current-count'); // Character count element
 taskDescriptionInput.addEventListener('input', () => {
-    if (taskDescriptionInput.value.length >= 200) {
+    const count = taskDescriptionInput.value.length;
+    currentCount.textContent = count;
+
+    if (count > 200) {
         taskDescriptionInput.classList.add('max-length');
+        currentCount.classList.add('max-length');
     } else {
         taskDescriptionInput.classList.remove('max-length');
+        currentCount.classList.remove('max-length');
     }
 });
 
