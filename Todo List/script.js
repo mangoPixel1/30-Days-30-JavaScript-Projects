@@ -36,10 +36,13 @@
 // DONE: Display newTaskOptions when text is entered in newTaskInput
 // DONE: Set max length for description textarea
 // DONE: Display red border when exceeds character limit
-
 // DONE: Explain why the corners are missing, causes, etc.
-// Character counter for description textarea
-// Desribe an approach to display task details when task gets clicked
+// DONE: Character counter for description textarea
+
+// DONE: Due to the hide/show new task options, when I click on alert box, it hides the new task options
+// DONE: Would it have the same effect to use !target.classlist.contains('.completeBtn') and !target.classlist.contains('.deleteBtn')?
+
+// Create side-by-side view of active tasks on left, selected task on the right
 
 // Come up with prompt ideas for other JS topics
 // Watch JS tutorials
@@ -60,9 +63,26 @@ const addTagBtn = document.getElementById('addTagBtn'); // Add tag button
 const tasksList = document.getElementById('active-tasks'); // Tasks list
 const completedTasksList = document.getElementById('completed-tasks'); // Completed tasks list
 
+// Hide options initially
+window.addEventListener('DOMContentLoaded', () => {
+    newTaskOptions.style.display = 'none';
+});
+
 function addNewTask() {
     // Check if input text box contains a value
     if (textInputBox.value == "") {
+        newTaskOptions.style.display = 'none';
+        return;
+    }
+
+    if (taskDescriptionInput.value.length > 200) {
+        alert('Description cannot be longer than 200 characters.');
+        newTaskOptions.style.display = 'block';
+        /*// Check if the input box still has text after the alert
+        if (textInputBox.value.trim() !== '') {
+            newTaskOptions.style.display = 'block';
+        }*/
+
         return;
     }
 
@@ -94,8 +114,6 @@ function addNewTask() {
 
     // Re-render the cleared currentTags array
     renderCurrentTags();
-
-
 }
 
 // Returns name of CSS class
@@ -241,6 +259,11 @@ textInputBox.addEventListener('input', () => {
     }
 });
 
+// Hide options when the add button is clicked
+document.getElementById('addBtn').addEventListener('click', () => {
+    newTaskOptions.style.display = 'none';
+});
+
 // Hide options and clear button when the clear button is clicked
 clearBtn.addEventListener('click', () => {
     textInputBox.value = '';
@@ -255,11 +278,6 @@ textInputBox.addEventListener('input', () => {
     } else {
         clearBtn.style.display = 'none'; // Hide clear button
     }
-});
-
-// Hide options when the add button is clicked
-document.getElementById('addBtn').addEventListener('click', () => {
-    newTaskOptions.style.display = 'none';
 });
 
 // Update character count and display red border when input exceeds character limit
@@ -277,15 +295,6 @@ taskDescriptionInput.addEventListener('input', () => {
     }
 });
 
-/*
-taskDescriptionInput.addEventListener('input', () => {
-    if (taskDescriptionInput.value.length >= 200) {
-        taskDescriptionInput.classList.add('max-length');
-    } else {
-        taskDescriptionInput.classList.remove('max-length');
-    }
-});*/
-
 // Add a new tag when add tag button is clicked
 addTagBtn.addEventListener('click', addNewTag);
 
@@ -296,6 +305,16 @@ tagsInput.addEventListener('keydown', (event) => {
     }
 });
 
+
+// Show task details when task item is clicked
+document.addEventListener('click', (event) => {
+    const target = event.target;
+    
+    if (target.closest('.taskItem') && !target.closest('.completeBtn') && !target.closest('.deleteBtn')) {
+      const taskItem = target.closest('.taskItem');
+      alert(taskItem.querySelector('.taskText').textContent);
+    }
+});
 
 const currentTags = [];
 
