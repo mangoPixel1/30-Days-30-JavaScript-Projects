@@ -1,6 +1,5 @@
 /*  FUTURE FEATURES TO IMPLEMENT  */
 
-// Use a form to handle task details input
 // Edit mode for each task
 // Separate list for deleted tasks
 // Expand/Collapse lists
@@ -42,6 +41,7 @@
 // DONE: Due to the hide/show new task options, when I click on alert box, it hides the new task options
 // DONE: Would it have the same effect to use !target.classlist.contains('.completeBtn') and !target.classlist.contains('.deleteBtn')?
 
+// Implement complete/delete buttons functionality
 // Create side-by-side view of active tasks on left, selected task on the right
 
 // Come up with prompt ideas for other JS topics
@@ -60,7 +60,7 @@ const taskDescriptionInput = document.getElementById('taskDescriptionInput'); //
 const tagsInput = document.getElementById('tagsInput'); // Tag input textbox
 const addTagBtn = document.getElementById('addTagBtn'); // Add tag button
 
-const tasksList = document.getElementById('active-tasks'); // Tasks list
+const activeTasksList = document.getElementById('active-tasks'); // Tasks list
 const completedTasksList = document.getElementById('completed-tasks'); // Completed tasks list
 
 // Hide options initially
@@ -153,7 +153,7 @@ function addNewTag() {
     tagsInput.value = '';
 }
 
-// Render the tasks from array into HTML elements
+/*// Render the tasks from array into HTML elements
 function renderTasks() {
     const activeTasksList = document.getElementById('active-tasks');
     const completedTasksList = document.getElementById('completed-tasks');
@@ -205,6 +205,75 @@ function renderTasks() {
             activeTasksList.appendChild(taskItem);
         }
     });
+}*/
+
+function renderTasks() {
+    const activeTasksList = document.getElementById('active-tasks');
+    const completedTasksList = document.getElementById('completed-tasks');
+  
+    // Clear existing tasks
+    activeTasksList.innerHTML = '';
+    completedTasksList.innerHTML = '';
+  
+    // Iterate over the tasks array
+    tasks.forEach(task => {
+        // Create task item element
+        const taskItem = createTaskItem(task);
+    
+        // Append task item to the active tasks list
+        activeTasksList.appendChild(taskItem);
+    });
+  
+    // Iterate over the completedTasks array
+    completedTasks.forEach(task => {
+        // Create task item element
+        const taskItem = createTaskItem(task);
+    
+        // Remove the task options for completed tasks
+        taskItem.lastChild.remove();
+    
+        // Add the 'completed' class to the task item
+        taskItem.classList.add('completed');
+    
+        // Append task item to the completed tasks list
+        completedTasksList.appendChild(taskItem);
+    });
+}
+
+function createTaskItem(task) {
+    // Create task item element
+    const taskItem = document.createElement('li');
+    taskItem.classList.add('taskItem');
+
+    // Add a CSS class based on the task priority
+    const priorityClass = getPriorityColor(task.priority);
+    taskItem.classList.add(priorityClass);
+
+    // Create task text element
+    const taskText = document.createElement('p');
+    taskText.classList.add('taskText');
+    taskText.textContent = task.name;
+    taskItem.appendChild(taskText);
+
+    // Create task options element
+    const taskOptions = document.createElement('div');
+    taskOptions.classList.add('taskOptions');
+
+    // Create complete button
+    const completeBtn = document.createElement('button');
+    completeBtn.classList.add('completeBtn');
+    completeBtn.textContent = 'Complete';
+    taskOptions.appendChild(completeBtn);
+
+    // Create delete button
+    const deleteBtn = document.createElement('button');
+    deleteBtn.classList.add('deleteBtn');
+    deleteBtn.textContent = 'Delete';
+    taskOptions.appendChild(deleteBtn);
+
+    taskItem.appendChild(taskOptions);
+
+    return taskItem;
 }
 
 // Render the tags from currentTags array into HTML
@@ -236,6 +305,30 @@ function renderCurrentTags() {
         newTag.appendChild(removeIcon);
         tagsInputList.appendChild(newTag);
     });
+}
+
+// array named 'tasks' holds task objects with their data (name, description, priority, tags, isCompleted)
+// array named 'completedTasks' is same as above except it holds the completed tasks that are not in activeTasksList
+// renderTasks() generates elements from tasks array
+
+function completeTask(taskItem) {
+    // Find the corresponding task object in the tasks array
+    const taskIndex = tasks.findIndex(task => task.name === taskItem.querySelector('.taskText').textContent);
+
+    if (taskIndex !== -1) {
+        // Move the task object to completedTasks array and set isCompleted to true
+        const completedTask = tasks[taskIndex];
+        completedTask.isCompleted = true;
+        completedTasks.push(completedTask);
+
+        // Remove the task object from tasks array
+        tasks.splice(taskIndex, 1);
+    }
+}
+
+function deleteTask(taskItem) {
+    // task item is in active tasks list
+    // delete 
 }
 
 
@@ -305,8 +398,29 @@ tagsInput.addEventListener('keydown', (event) => {
     }
 });
 
+activeTasksList.addEventListener('click', (event) => {
+    if (event.target.tagName === 'BUTTON') {
+        if (event.target.classList.contains('deleteBtn')) {
+            // Get reference to taskItem element
+            const taskItem = event.target.closest('.taskItem');
+            
+            // Call deleteTask(taskItem)
+            deleteTask(taskItem);
+        }
+        if (event.target.classList.contains('completeBtn')) {
+            // Get reference to taskItem element
+            const taskItem = event.target.closest('.taskItem');
+            
+            // Call completeTask(taskItem)
+            completeTask(taskItem);
+        }
+        
+        renderTasks();
+    }
+});
 
-// Show task details when task item is clicked
+
+/*// Show task details when task item is clicked
 document.addEventListener('click', (event) => {
     const target = event.target;
     
@@ -314,12 +428,15 @@ document.addEventListener('click', (event) => {
       const taskItem = target.closest('.taskItem');
       alert(taskItem.querySelector('.taskText').textContent);
     }
-});
+});*/
 
 const currentTags = [];
+const tasks = [];
+const completedTasks = [];
 
-const tasks = [
-    /*{
+renderTasks();
+
+/*{
         name: "Buy groceries",
         description: "Get milk, bread, eggs, and vegetables from the supermarket",
         priority: "medium",
@@ -354,53 +471,8 @@ const tasks = [
         tags: ["exercise", "health"],
         isCompleted: false
     }*/
-];
-
-renderTasks();
 
 /*
-// Function to handle adding a new task to the list
-function addNewTask() {
-    // Check if text box contains text
-    if (textInputBox.value.length === 0) {
-        alert('Text box is empty.');
-        return;
-    }
-
-    // Create new task item <div>
-    const newTask = document.createElement('li');
-    newTask.classList.add('taskItem');
-
-    // Create new task text <p>
-    const taskText = document.createElement('p');
-    taskText.classList.add('taskText');
-    taskText.textContent = textInputBox.value;
-    newTask.appendChild(taskText);
-
-    // Create new taskOptions <div> (Complete & Delete)
-    const taskOptions = document.createElement('div');
-    taskOptions.classList.add('taskOptions');
-
-    // Complete task <button>
-    const completeBtn = document.createElement('button');
-    completeBtn.textContent = 'Complete';
-    completeBtn.classList.add('completeBtn');
-    taskOptions.appendChild(completeBtn);
-
-    // Delete task <button>
-    const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = 'Delete';
-    deleteBtn.classList.add('deleteBtn');
-    taskOptions.appendChild(deleteBtn);
-
-    // Append all newly created elements to tasks list
-    newTask.appendChild(taskOptions);
-    tasksList.insertBefore(newTask, tasksList.firstChild);
-
-    // Reset input text box
-    textInputBox.value = '';
-}
-
 // Function to handle marking a task as complete
 function completeTask(event) {
     const buttonClicked = event.target;
