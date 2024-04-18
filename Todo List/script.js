@@ -104,60 +104,49 @@ function addNewTag() {
 function renderTasks() {
     const activeTasksList = document.getElementById('active-tasks');
     const completedTasksList = document.getElementById('completed-tasks');
-  
+
     // Clear existing tasks
     activeTasksList.innerHTML = '';
     completedTasksList.innerHTML = '';
-  
+
     // Iterate over the tasks array
     tasks.forEach(task => {
         // Create task item element
         const taskItem = createTaskItem(task);
-    
+
         // Get the task options element
         const taskOptions = taskItem.querySelector('.taskOptions');
-    
-        // Create complete button
-        const completeBtn = document.createElement('button');
-        completeBtn.classList.add('completeBtn');
-        completeBtn.textContent = 'Complete';
-        taskOptions.appendChild(completeBtn);
-    
+
+        if (task.isCompleted) {
+            // Task is completed
+            taskItem.classList.add('completed');
+
+            // Create undo button
+            const undoBtn = document.createElement('button');
+            undoBtn.classList.add('undoBtn');
+            undoBtn.textContent = 'Undo';
+            taskOptions.appendChild(undoBtn);
+        } else {
+            // Task is active
+            // Create complete button
+            const completeBtn = document.createElement('button');
+            completeBtn.classList.add('completeBtn');
+            completeBtn.textContent = 'Complete';
+            taskOptions.appendChild(completeBtn);
+        }
+
         // Create delete button
         const deleteBtn = document.createElement('button');
         deleteBtn.classList.add('deleteBtn');
         deleteBtn.textContent = 'Delete';
         taskOptions.appendChild(deleteBtn);
-    
-        // Append task item to the active tasks list
-        activeTasksList.appendChild(taskItem);
-    });
-  
-    // Iterate over the completedTasks array
-    completedTasks.forEach(task => {
-        // Create task item element
-        const taskItem = createTaskItem(task);
-    
-        // Add the 'completed' class to the task item
-        taskItem.classList.add('completed');
-    
-        // Get the task options element
-        const taskOptions = taskItem.querySelector('.taskOptions');
-    
-        // Create undo button
-        const undoBtn = document.createElement('button');
-        undoBtn.classList.add('undoBtn');
-        undoBtn.textContent = 'Undo';
-        taskOptions.appendChild(undoBtn);
-    
-        // Create delete button
-        const deleteBtn = document.createElement('button');
-        deleteBtn.classList.add('deleteBtn');
-        deleteBtn.textContent = 'Delete';
-        taskOptions.appendChild(deleteBtn);
-    
-        // Append task item to the completed tasks list
-        completedTasksList.appendChild(taskItem);
+
+        // Append task item to the appropriate list based on completion status
+        if (task.isCompleted) {
+            completedTasksList.appendChild(taskItem);
+        } else {
+            activeTasksList.appendChild(taskItem);
+        }
     });
 }
 
@@ -224,26 +213,30 @@ function completeTask(taskItem) {
     const taskIndex = tasks.findIndex(task => task.name === taskItem.querySelector('.taskText').textContent);
 
     if (taskIndex !== -1) {
-        // Move the task object to completedTasks array and set isCompleted to true
-        const completedTask = tasks[taskIndex];
-        completedTask.isCompleted = true;
-        completedTasks.push(completedTask);
-
-        // Remove the task object from tasks array
-        tasks.splice(taskIndex, 1);
+        // Set isCompleted to true for the task
+        tasks[taskIndex].isCompleted = true;
     }
-    // renderTasks() is called in caller function to update lists
 }
 
 function deleteTask(taskItem) {
+    const taskName = taskItem.querySelector('.taskText').textContent;
+
     // Find the corresponding task object in the tasks array
-    const taskIndex = tasks.findIndex(task => task.name === taskItem.querySelector('.taskText').textContent);
+    const taskIndex = tasks.findIndex(task => task.name === taskName);
 
     // Remove the task object from tasks array
     tasks.splice(taskIndex, 1);
 }
 
+function undoTask(taskItem) {
+    // Find the corresponding task object in the tasks array
+    const taskIndex = tasks.findIndex(task => task.name === taskItem.querySelector('.taskText').textContent);
 
+    if (taskIndex !== -1) {
+        // Set isCompleted to false for the task
+        tasks[taskIndex].isCompleted = false;
+    }
+}
 
 // Add new task when add button is clicked
 addBtn.addEventListener('click', addNewTask);
@@ -316,12 +309,26 @@ activeTasksList.addEventListener('click', (event) => {
         if (event.target.classList.contains('deleteBtn')) {
             const taskItem = event.target.closest('.taskItem'); // Gets selected task
             deleteTask(taskItem);
-        }
-        if (event.target.classList.contains('completeBtn')) {
+        } else if (event.target.classList.contains('completeBtn')) {
             const taskItem = event.target.closest('.taskItem'); // Gets selected task
             completeTask(taskItem);
         }
         
+        renderTasks();
+    }
+});
+
+// Handle delete and undo button clicks on COMPLETED tasks
+completedTasksList.addEventListener('click', (event) => {
+    if (event.target.tagName === 'BUTTON') {
+        const taskItem = event.target.closest('.taskItem'); // Gets selected task
+
+        if (event.target.classList.contains('deleteBtn')) {
+            deleteTask(taskItem);
+        } else if (event.target.classList.contains('undoBtn')) {
+            undoTask(taskItem);
+        }
+
         renderTasks();
     }
 });

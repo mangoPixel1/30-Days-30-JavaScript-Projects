@@ -97,10 +97,7 @@ ul {
 .taskOptions {
     display: flex;
     justify-content: space-between;
-}
-
-.completeBtn {
-    margin-right: 5px;
+    gap: 5px;
 }
 
 .completed .taskText {
