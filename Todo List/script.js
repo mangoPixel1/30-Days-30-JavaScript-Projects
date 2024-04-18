@@ -1,55 +1,3 @@
-/*  FUTURE FEATURES TO IMPLEMENT  */
-
-// Edit mode for each task
-// Separate list for deleted tasks
-// Expand/Collapse lists
-// Various views: day, 3 day, week, month
-// Color themes, auto light/dark modes
-// Filter, sort by
-// Data persistence, local storage
-
-/*  AI Prompts for DataAnnotation  */
-
-// DONE: Refactor code to use functions and instead of having function logic in the body of addEventListener()
-// DONE: Convert complete task functionality using the toggle() method for the class "complete"
-// DONE: Create a new section in the HTML for the completed tasks
-// DONE: Modify the addNewTask function to add the task to the beginning of the list
-// DONE: Without providing code, give me an approach to move the completed items to the completed-tasks <div>
-// TIP: Use simpler examples to avoid copy/pasting entire code
-// DONE: How to add a new task by pressing enter key
-// DONE: My code editor is telling me that event.keycode is deprecated
-// DONE: Change divs: active tasks to <ul>; task items to <li>, keep the same classes
-// DONE: Suggest approach for implementing complex tasks: name, description, priority, tags, isCompleted
-// DONE: Show a gray border for low priority task items (default), yellow for medium, and red for high.
-// DONE: Is it good practice to use a CSS class or update the styling in the script for this case?
-// DONE: Create function that dynamically renders tasks list from tasks array (use iteration)
-
-// DONE: How to get value of radio buttons
-// DONE: New task not displaying priority color
-// DONE: Use a more concise way to set the priority value within the definition of newTask object
-// DONE: When I highlight text in the description textarea and click and hold while moving the cursor away from the container and let go, the new task options go away.
-// DONE: When adding tags, add a hyphen in place of spaces for the tags input field
-// DONE: Display x when hovering over a tag
-// DONE: How to add event listeners to multiple elements (tags) to remove when clicked.
-// DONE: Place the clearBtn inside the newTaskOptions input field
-// DONE: Display newTaskOptions when text is entered in newTaskInput
-// DONE: Set max length for description textarea
-// DONE: Display red border when exceeds character limit
-// DONE: Explain why the corners are missing, causes, etc.
-// DONE: Character counter for description textarea
-
-// DONE: Due to the hide/show new task options, when I click on alert box, it hides the new task options
-// DONE: Would it have the same effect to use !target.classlist.contains('.completeBtn') and !target.classlist.contains('.deleteBtn')?
-
-// Implement complete/delete buttons functionality
-// Create side-by-side view of active tasks on left, selected task on the right
-
-// Come up with prompt ideas for other JS topics
-// Watch JS tutorials
-
-
-
-
 // HTML tag references
 const textInputBox = document.getElementById('newTaskInput'); // New task input
 const clearBtn = document.getElementById('clearBtn'); // Clear button (x)
@@ -153,7 +101,6 @@ function addNewTag() {
     tagsInput.value = '';
 }
 
-/*// Render the tasks from array into HTML elements
 function renderTasks() {
     const activeTasksList = document.getElementById('active-tasks');
     const completedTasksList = document.getElementById('completed-tasks');
@@ -165,22 +112,10 @@ function renderTasks() {
     // Iterate over the tasks array
     tasks.forEach(task => {
         // Create task item element
-        const taskItem = document.createElement('li');
-        taskItem.classList.add('taskItem');
-
-        // Add a CSS class based on the task priority
-        const priorityClass = getPriorityColor(task.priority);
-        taskItem.classList.add(priorityClass);
-  
-        // Create task text element
-        const taskText = document.createElement('p');
-        taskText.classList.add('taskText');
-        taskText.textContent = task.name;
-        taskItem.appendChild(taskText);
+        const taskItem = createTaskItem(task);
     
-        // Create task options element
-        const taskOptions = document.createElement('div');
-        taskOptions.classList.add('taskOptions');
+        // Get the task options element
+        const taskOptions = taskItem.querySelector('.taskOptions');
     
         // Create complete button
         const completeBtn = document.createElement('button');
@@ -194,32 +129,6 @@ function renderTasks() {
         deleteBtn.textContent = 'Delete';
         taskOptions.appendChild(deleteBtn);
     
-        taskItem.appendChild(taskOptions);
-    
-        // Append task item to the appropriate list based on completion status
-        if (task.isCompleted) {
-            taskItem.classList.toggle('completed');
-            taskItem.lastChild.remove();
-            completedTasksList.appendChild(taskItem);
-        } else {
-            activeTasksList.appendChild(taskItem);
-        }
-    });
-}*/
-
-function renderTasks() {
-    const activeTasksList = document.getElementById('active-tasks');
-    const completedTasksList = document.getElementById('completed-tasks');
-  
-    // Clear existing tasks
-    activeTasksList.innerHTML = '';
-    completedTasksList.innerHTML = '';
-  
-    // Iterate over the tasks array
-    tasks.forEach(task => {
-        // Create task item element
-        const taskItem = createTaskItem(task);
-    
         // Append task item to the active tasks list
         activeTasksList.appendChild(taskItem);
     });
@@ -229,11 +138,23 @@ function renderTasks() {
         // Create task item element
         const taskItem = createTaskItem(task);
     
-        // Remove the task options for completed tasks
-        taskItem.lastChild.remove();
-    
         // Add the 'completed' class to the task item
         taskItem.classList.add('completed');
+    
+        // Get the task options element
+        const taskOptions = taskItem.querySelector('.taskOptions');
+    
+        // Create undo button
+        const undoBtn = document.createElement('button');
+        undoBtn.classList.add('undoBtn');
+        undoBtn.textContent = 'Undo';
+        taskOptions.appendChild(undoBtn);
+    
+        // Create delete button
+        const deleteBtn = document.createElement('button');
+        deleteBtn.classList.add('deleteBtn');
+        deleteBtn.textContent = 'Delete';
+        taskOptions.appendChild(deleteBtn);
     
         // Append task item to the completed tasks list
         completedTasksList.appendChild(taskItem);
@@ -258,19 +179,6 @@ function createTaskItem(task) {
     // Create task options element
     const taskOptions = document.createElement('div');
     taskOptions.classList.add('taskOptions');
-
-    // Create complete button
-    const completeBtn = document.createElement('button');
-    completeBtn.classList.add('completeBtn');
-    completeBtn.textContent = 'Complete';
-    taskOptions.appendChild(completeBtn);
-
-    // Create delete button
-    const deleteBtn = document.createElement('button');
-    deleteBtn.classList.add('deleteBtn');
-    deleteBtn.textContent = 'Delete';
-    taskOptions.appendChild(deleteBtn);
-
     taskItem.appendChild(taskOptions);
 
     return taskItem;
@@ -324,11 +232,15 @@ function completeTask(taskItem) {
         // Remove the task object from tasks array
         tasks.splice(taskIndex, 1);
     }
+    // renderTasks() is called in caller function to update lists
 }
 
 function deleteTask(taskItem) {
-    // task item is in active tasks list
-    // delete 
+    // Find the corresponding task object in the tasks array
+    const taskIndex = tasks.findIndex(task => task.name === taskItem.querySelector('.taskText').textContent);
+
+    // Remove the task object from tasks array
+    tasks.splice(taskIndex, 1);
 }
 
 
@@ -398,20 +310,15 @@ tagsInput.addEventListener('keydown', (event) => {
     }
 });
 
+// Handle complete/delete button clicks on ACTIVE tasks
 activeTasksList.addEventListener('click', (event) => {
     if (event.target.tagName === 'BUTTON') {
         if (event.target.classList.contains('deleteBtn')) {
-            // Get reference to taskItem element
-            const taskItem = event.target.closest('.taskItem');
-            
-            // Call deleteTask(taskItem)
+            const taskItem = event.target.closest('.taskItem'); // Gets selected task
             deleteTask(taskItem);
         }
         if (event.target.classList.contains('completeBtn')) {
-            // Get reference to taskItem element
-            const taskItem = event.target.closest('.taskItem');
-            
-            // Call completeTask(taskItem)
+            const taskItem = event.target.closest('.taskItem'); // Gets selected task
             completeTask(taskItem);
         }
         
@@ -431,7 +338,15 @@ document.addEventListener('click', (event) => {
 });*/
 
 const currentTags = [];
-const tasks = [];
+const tasks = [
+    {
+        name: 'Task 1',
+        description: 'Complete project proposal',
+        priority: 'high',
+        tags: ['work', 'project'],
+        isCompleted: false
+      },
+];
 const completedTasks = [];
 
 renderTasks();
@@ -471,51 +386,3 @@ renderTasks();
         tags: ["exercise", "health"],
         isCompleted: false
     }*/
-
-/*
-// Function to handle marking a task as complete
-function completeTask(event) {
-    const buttonClicked = event.target;
-    
-    if (buttonClicked.matches('button') && buttonClicked.classList.contains('completeBtn')) {
-        const taskItem = event.target.parentElement.parentElement;
-        const taskText = taskItem.firstElementChild;
-        const taskOptions = taskItem.lastElementChild;
-
-        // Toggle the 'completed' CSS class
-        taskText.classList.toggle('completed');
-
-        // Remove buttons from task item
-        taskItem.removeChild(taskOptions);
-
-        // Move the task item to the completed tasks list
-        const completedTasksList = document.getElementById('completed-tasks');
-        completedTasksList.insertBefore(taskItem, completedTasksList.firstChild);
-    }
-}
-
-// Function to handle deleting a task
-function deleteTask(event) {
-    const buttonClicked = event.target;
-    if (buttonClicked.matches('button') && buttonClicked.classList.contains('deleteBtn')) {
-        const taskItem = event.target.parentElement.parentElement;
-        taskItem.remove();
-    }
-}
-
-// Event listener for adding a new task (Add button)
-addBtn.addEventListener('click', addNewTask);
-
-// Event listener for adding a new task (Enter key press)
-textInputBox.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' || event.keyCode === 13) {
-        addNewTask();
-    }
-});
-
-// Event listener for marking a task as complete
-tasksList.addEventListener('click', completeTask);
-
-// Event listener for deleting a task
-tasksList.addEventListener('click', deleteTask);
-*/
