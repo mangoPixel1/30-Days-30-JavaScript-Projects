@@ -11,10 +11,10 @@ const addTagBtn = document.getElementById('addTagBtn'); // Add tag button
 const activeTasksList = document.getElementById('active-tasks'); // Tasks list
 const completedTasksList = document.getElementById('completed-tasks'); // Completed tasks list
 
-// Hide options initially
+/*// Hide options initially
 window.addEventListener('DOMContentLoaded', () => {
     newTaskOptions.style.display = 'none';
-});
+});*/
 
 function addNewTask() {
     // Check if input text box contains a value
@@ -26,11 +26,6 @@ function addNewTask() {
     if (taskDescriptionInput.value.length > 200) {
         alert('Description cannot be longer than 200 characters.');
         newTaskOptions.style.display = 'block';
-        /*// Check if the input box still has text after the alert
-        if (textInputBox.value.trim() !== '') {
-            newTaskOptions.style.display = 'block';
-        }*/
-
         return;
     }
 
@@ -57,6 +52,9 @@ function addNewTask() {
     // Clear the currentTags array
     currentTags.length = 0;
 
+    // Hide the newTaskOptions div
+    newTaskOptions.style.display = 'none';
+
     // Re-render the tasks
     renderTasks();
 
@@ -64,19 +62,13 @@ function addNewTask() {
     renderCurrentTags();
 }
 
-// Returns name of CSS class
-function getPriorityColor(priority) {
-    switch (priority) {
-        case "low":
-            return "priority-low";
-        case "medium":
-            return "priority-medium";
-        case "high":
-            return "priority-high";
-        default:
-            return "priority-default";
-    }
-}
+// Get the name of the CSS class
+const priorityClassMap = {
+    low: "priority-low",
+    medium: "priority-medium",
+    high: "priority-high",
+};
+const getPriorityColor = (priority) => priorityClassMap[priority] || "priority-default";
 
 function addNewTag() {
     const tagsInput = document.getElementById('tagsInput');
@@ -148,6 +140,8 @@ function renderTasks() {
             activeTasksList.appendChild(taskItem);
         }
     });
+
+    updateDividerVisibility();
 }
 
 function createTaskItem(task) {
@@ -208,6 +202,7 @@ function renderCurrentTags() {
 // array named 'completedTasks' is same as above except it holds the completed tasks that are not in activeTasksList
 // renderTasks() generates elements from tasks array
 
+// Moves an active task to completed tasks list
 function completeTask(taskItem) {
     // Find the corresponding task object in the tasks array
     const taskIndex = tasks.findIndex(task => task.name === taskItem.querySelector('.taskText').textContent);
@@ -218,6 +213,7 @@ function completeTask(taskItem) {
     }
 }
 
+// Removes a task from the DOM
 function deleteTask(taskItem) {
     const taskName = taskItem.querySelector('.taskText').textContent;
 
@@ -228,6 +224,7 @@ function deleteTask(taskItem) {
     tasks.splice(taskIndex, 1);
 }
 
+// Moves completed task to active tasks list
 function undoTask(taskItem) {
     // Find the corresponding task object in the tasks array
     const taskIndex = tasks.findIndex(task => task.name === taskItem.querySelector('.taskText').textContent);
@@ -235,6 +232,18 @@ function undoTask(taskItem) {
     if (taskIndex !== -1) {
         // Set isCompleted to false for the task
         tasks[taskIndex].isCompleted = false;
+    }
+}
+
+// Shows divider between active and completed tasks list when completed tasks list has tasks, hides otherwise
+function updateDividerVisibility() {
+    const completedTasksList = document.getElementById('completed-tasks');
+    const listDivider = document.querySelector('.divider');
+    
+    if (completedTasksList.children.length > 0) {
+        listDivider.style.display = 'block';
+    } else {
+        listDivider.style.display = 'none';
     }
 }
 
@@ -255,11 +264,6 @@ textInputBox.addEventListener('input', () => {
     } else {
         newTaskOptions.style.display = 'none';
     }
-});
-
-// Hide options when the add button is clicked
-document.getElementById('addBtn').addEventListener('click', () => {
-    newTaskOptions.style.display = 'none';
 });
 
 // Hide options and clear button when the clear button is clicked
@@ -333,7 +337,6 @@ completedTasksList.addEventListener('click', (event) => {
     }
 });
 
-
 /*// Show task details when task item is clicked
 document.addEventListener('click', (event) => {
     const target = event.target;
@@ -346,19 +349,7 @@ document.addEventListener('click', (event) => {
 
 const currentTags = [];
 const tasks = [
-    {
-        name: 'Task 1',
-        description: 'Complete project proposal',
-        priority: 'high',
-        tags: ['work', 'project'],
-        isCompleted: false
-      },
-];
-const completedTasks = [];
-
-renderTasks();
-
-/*{
+    /*{
         name: "Buy groceries",
         description: "Get milk, bread, eggs, and vegetables from the supermarket",
         priority: "medium",
@@ -366,30 +357,15 @@ renderTasks();
         isCompleted: false
     },
     {
-        name: "Finish project report",
-        description: "Complete the project report and submit it to the manager",
-        priority: "high",
-        tags: ["work", "urgent"],
-        isCompleted: false
-    },
-    {
-        name: "Call dentist",
-        description: "Schedule a dental checkup appointment",
-        priority: "low",
-        tags: ["health", "personal"],
-        isCompleted: true
-    },
-    {
-        name: "Clean the house",
-        description: "Vacuum the floors, dust the furniture, and do the laundry",
-        priority: "medium",
-        tags: ["household", "cleaning"],
-        isCompleted: false
-    },
-    {
         name: "Go for a run",
         description: "Run 5 kilometers in the park",
         priority: "low",
         tags: ["exercise", "health"],
-        isCompleted: false
+        isCompleted: true
     }*/
+];
+const completedTasks = [];
+
+renderTasks();
+updateDividerVisibility();
+
