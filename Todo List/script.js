@@ -11,10 +11,19 @@ const addTagBtn = document.getElementById('addTagBtn'); // Add tag button
 const activeTasksList = document.getElementById('active-tasks'); // Tasks list
 const completedTasksList = document.getElementById('completed-tasks'); // Completed tasks list
 
-/*// Hide options initially
-window.addEventListener('DOMContentLoaded', () => {
-    newTaskOptions.style.display = 'none';
-});*/
+// Generates a unique id by checking if the newly created id is already in use by another task
+function generateUniqueId(tasks) {
+    while (true) { // Keep looping until a unique ID is found
+      const newId = Math.floor(Math.random() * 900000) + 100000; // 6-digit random number
+  
+      // Check if the ID is already in use:
+      const idExists = tasks.some(task => task.id === newId);
+  
+      if (!idExists) {
+        return newId; // Found a unique ID, return it
+      }
+    }
+}
 
 function addNewTask() {
     // Check if input text box contains a value
@@ -30,12 +39,17 @@ function addNewTask() {
     }
 
     // Create a new task object
+    const now = new Date(); // Get the current date and time
+
+    // Create a new task object
     const newTask = {
+        id: generateUniqueId(tasks),
         name: textInputBox.value,
         description: taskDescriptionInput.value,
         priority: document.querySelector('input[name="priorityOptions"]:checked')?.value || "",
         tags: currentTags,
-        isCompleted: false
+        isCompleted: false,
+        timeStamp: now // Store the date
     };
 
     // Add the new task object to the tasks array
@@ -148,6 +162,7 @@ function createTaskItem(task) {
     // Create task item element
     const taskItem = document.createElement('li');
     taskItem.classList.add('taskItem');
+    taskItem.setAttribute('data-id', task.id);
 
     // Add a CSS class based on the task priority
     const priorityClass = getPriorityColor(task.priority);
@@ -198,40 +213,49 @@ function renderCurrentTags() {
     });
 }
 
-// array named 'tasks' holds task objects with their data (name, description, priority, tags, isCompleted)
+// array named 'tasks' holds task objects with their data (id, name, description, priority, tags, isCompleted)
 // array named 'completedTasks' is same as above except it holds the completed tasks that are not in activeTasksList
 // renderTasks() generates elements from tasks array
 
 // Moves an active task to completed tasks list
 function completeTask(taskItem) {
+    const taskId = taskItem.dataset.id;
+
     // Find the corresponding task object in the tasks array
-    const taskIndex = tasks.findIndex(task => task.name === taskItem.querySelector('.taskText').textContent);
+    const taskIndex = tasks.findIndex(task => task.id === parseInt(taskId, 10));
 
     if (taskIndex !== -1) {
         // Set isCompleted to true for the task
         tasks[taskIndex].isCompleted = true;
+        console.log(`Active task marked as completed (ID): ${taskId}`);
     }
 }
 
 // Removes a task from the DOM
 function deleteTask(taskItem) {
-    const taskName = taskItem.querySelector('.taskText').textContent;
+    const taskId = taskItem.dataset.id; // <li class="taskItem priority-default" data-id="654321"></li>
 
     // Find the corresponding task object in the tasks array
-    const taskIndex = tasks.findIndex(task => task.name === taskName);
+    const taskIndex = tasks.findIndex(task => task.id === parseInt(taskId, 10));
 
     // Remove the task object from tasks array
-    tasks.splice(taskIndex, 1);
+    if (taskIndex !== -1) { // Check if found
+        tasks.splice(taskIndex, 1);
+        taskItem.remove();  // Remove from the DOM
+    }
 }
 
 // Moves completed task to active tasks list
 function undoTask(taskItem) {
+    const taskId = taskItem.dataset.id;
+
     // Find the corresponding task object in the tasks array
-    const taskIndex = tasks.findIndex(task => task.name === taskItem.querySelector('.taskText').textContent);
+    const taskIndex = tasks.findIndex(task => task.id === parseInt(taskId, 10));
 
     if (taskIndex !== -1) {
         // Set isCompleted to false for the task
         tasks[taskIndex].isCompleted = false;
+        console.log(`Completed task marked as active (ID): ${taskId}`);
     }
 }
 
@@ -247,7 +271,7 @@ function updateDividerVisibility() {
     }
 }
 
-// Add new task when add button is clicked
+// Add new task when Add button is clicked
 addBtn.addEventListener('click', addNewTask);
 
 // Add new task when Enter key is pressed
@@ -350,6 +374,7 @@ document.addEventListener('click', (event) => {
 const currentTags = [];
 const tasks = [
     /*{
+        id: 123456
         name: "Buy groceries",
         description: "Get milk, bread, eggs, and vegetables from the supermarket",
         priority: "medium",
@@ -357,6 +382,7 @@ const tasks = [
         isCompleted: false
     },
     {
+        id: 654321
         name: "Go for a run",
         description: "Run 5 kilometers in the park",
         priority: "low",
