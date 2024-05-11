@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo List</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://kit.fontawesome.com/47a3e61aee.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div id="container">
-        <h1>Todo List</h1>
+        <h1>Tasks</h1>
         
         <div id="addNewTask">
             <div class="input-container">
@@ -34,42 +35,33 @@
             
             <p class="label">Tags</p>
             <input type="text" id="tagsInput" placeholder="Work, school, health, etc."><button id="addTagBtn">Add Tag</button>
-            <ul id="tagsInputList">
-                <!--
-                <li class="tag">
-                    <span class="tag-text">example-tag</span>
-                    <span class="tag-remove">&times;</span>
-                </li>
-                -->
-            </ul>
+            <ul id="tagsInputList"></ul>
         </div>
-        
-        <ul id="active-tasks">
-        <!-- 
-            <li class="taskItem priority-default">
-                <p class="taskText">test</p>
-                <div class="taskOptions">
-                    <button class="completeBtn">Complete</button>
-                    <button class="deleteBtn">Delete</button>
-                </div>
-            </li>
-        -->
-        </ul>
+
+        <div id="toolbar">
+            <div id="expand-collapse">
+                <button id="expand-all">Expand All</button>
+                <button id="collapse-all">Collapse All</button>
+            </div>
+            <!-- Filter label and dropdown -->
+            <div id="filter-container">
+                <label for="filter-dropdown">Filter:</label>
+                <select id="filter-dropdown">
+                    <option value="">Select Priority</option>
+                    <option value="low">Low Priority</option>
+                    <option value="medium">Medium Priority</option>
+                    <option value="high">High Priority</option>
+                    <option value="default">No Priority</option>
+                </select>
+            </div>
+            <button id="reset-toolbar">Reset</button>
+        </div>
+
+        <ul id="active-tasks"></ul>
 
         <hr class="divider">
 
-        <ul id="completed-tasks">
-        <!-- 
-            <li class="taskItem priority-high completed">
-                <p class="taskText">Task 1</p>
-                <div class="taskOptions">
-                    <button class="undoBtn">Undo</button>
-                    <button class="deleteBtn">Delete</button>
-                </div>
-            </li>
-        -->
-        </ul>
-        
+        <ul id="completed-tasks"></ul>        
     </div>
     
     <script src="script.js"></script>
