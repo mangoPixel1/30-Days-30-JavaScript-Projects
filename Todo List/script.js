@@ -49,8 +49,8 @@ function addNewTask() {
         priority: document.querySelector('input[name="priorityOptions"]:checked')?.value || "",
         tags: [...currentTags],
         isCompleted: false,
-        timeStamp: now, // Store the date
-        isExpanded: false // Add this line
+        timeStamp: now,
+        isExpanded: false
     };
 
     // Add the new task object to the tasks array
@@ -111,168 +111,29 @@ function addNewTag() {
 }
 
 function renderTasks() {
-    const activeTasksList = document.getElementById('active-tasks');
-    const completedTasksList = document.getElementById('completed-tasks');
+    if (filteredTasks.length === 0) {
+        // No filter applied, render all tasks
+        const activeTasksList = document.getElementById('active-tasks');
+        const completedTasksList = document.getElementById('completed-tasks');
 
-    // Clear existing tasks
-    activeTasksList.innerHTML = '';
-    completedTasksList.innerHTML = '';
+        activeTasksList.innerHTML = '';
+        completedTasksList.innerHTML = '';
 
-    // Iterate over the tasks array
-    tasks.forEach(task => {
-        // Create task item element
-        const taskItem = createTaskItem(task);
-
-        // Append task item to the appropriate list based on completion status
-        if (task.isCompleted) {
-            completedTasksList.appendChild(taskItem);
-        } else {
-            activeTasksList.appendChild(taskItem);
-        }
-    });
+        tasks.forEach(task => {
+            const taskItem = createTaskItem(task);
+            if (task.isCompleted) {
+                completedTasksList.appendChild(taskItem);
+            } else {
+                activeTasksList.appendChild(taskItem);
+            }
+        });
+    } else {
+        // Filter applied, render filtered tasks
+        renderFilteredTasks();
+    }
 
     updateDividerVisibility();
 }
-
-/*function createTaskItem(task) {
-    // Create task item element
-    const taskItem = document.createElement('li');
-    taskItem.classList.add('taskItem');
-    taskItem.setAttribute('data-id', task.id);
-
-    // Show/hide details based on current state
-    if (task.isExpanded) {
-        taskItem.classList.add('show-details');
-    }
-
-    // Add a CSS class based on the task priority
-    const priorityClass = getPriorityColor(task.priority);
-    taskItem.classList.add(priorityClass);
-
-    // Create task content element
-    const taskContent = document.createElement('div');
-    taskContent.classList.add('task-content');
-    taskItem.appendChild(taskContent);
-
-    // Create label element
-    const label = document.createElement('label');
-    taskContent.appendChild(label);
-
-    // Create checkbox element
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.classList.add('completeCheckbox');
-    checkbox.checked = task.isCompleted;
-    label.appendChild(checkbox);
-
-    // Add change event listener to the checkbox
-
-    checkbox.addEventListener('change', () => {
-        const isChecked = checkbox.checked;
-        if (isChecked) {
-            completeTask(task.id);
-        } else {
-            undoTask(task.id);
-        }
-        renderTasks();
-    });
-
-    // Create task text element
-    const taskText = document.createElement('span');
-    taskText.classList.add('taskText');
-    taskText.textContent = task.name;
-    label.appendChild(taskText);
-
-    // Create task options element
-    const taskOptions = document.createElement('div');
-    taskOptions.classList.add('taskOptions');
-    taskContent.appendChild(taskOptions);
-
-    // Create task edit button
-    const editBtn = document.createElement('button');
-    editBtn.classList.add('editBtn');
-
-    // Create Font Awesome options button
-    const editIcon = document.createElement('i');
-    editIcon.classList.add('fa-solid', 'fa-pen-to-square');
-
-    editBtn.appendChild(editIcon);
-    taskOptions.appendChild(editBtn);
-
-    // Create delete button
-    const deleteBtn = document.createElement('button');
-    deleteBtn.classList.add('deleteBtn');
-
-    // Create Font Awesome trash icon
-    const trashIcon = document.createElement('i');
-    trashIcon.classList.add('fa-solid', 'fa-trash');
-
-    deleteBtn.appendChild(trashIcon);
-    taskOptions.appendChild(deleteBtn);
-
-    // Add click event listener to the delete button
-    deleteBtn.addEventListener('click', () => {
-        deleteTask(task.id);
-        renderTasks();
-    });
-
-    // Add click event listener to the task-content div to expand/collapse task
-    taskContent.addEventListener('click', (event) => {
-        // Check if the clicked element is not a button, checkbox, task text, or edit button
-        if (
-            !event.target.matches('button') &&
-            !event.target.matches('input[type="checkbox"]') &&
-            !event.target.matches('.taskText') &&
-            !event.target.closest('.editBtn')
-        ) {
-            // Get the task ID from the data-id attribute of the taskItem
-            const taskId = taskItem.dataset.id;
-
-            // Find the index of the task in the tasks array based on the task ID
-            const taskIndex = tasks.findIndex(task => task.id === parseInt(taskId, 10));
-
-            // If the task is found in the tasks array
-            if (taskIndex !== -1) {
-                // Toggle the isExpanded property of the task
-                tasks[taskIndex].isExpanded = !tasks[taskIndex].isExpanded;
-
-                // Toggle the 'show-details' class on the taskItem to show/hide task details
-                taskItem.classList.toggle('show-details');
-            }
-        }
-    });
-
-    // Create task details element
-    const taskDetails = document.createElement('div');
-    taskDetails.classList.add('task-details');
-    taskItem.appendChild(taskDetails);
-
-    // Create task description element
-    const taskDescription = document.createElement('p');
-    taskDescription.classList.add('task-description');
-    taskDescription.textContent = task.description;
-    taskDetails.appendChild(taskDescription);
-
-    // Create tags list element
-    const tagsList = document.createElement('ul');
-    tagsList.classList.add('tags-list');
-    taskDetails.appendChild(tagsList);
-
-    // Iterate over the task tags and create tag elements
-    task.tags.forEach(tag => {
-        const tagItem = document.createElement('li');
-        tagItem.textContent = tag;
-        tagsList.appendChild(tagItem);
-    });
-
-    // Create timestamp element
-    const timestamp = document.createElement('span');
-    timestamp.classList.add('timestamp');
-    timestamp.textContent = task.timeStamp.toLocaleString(); // Format the timestamp as desired
-    taskDetails.appendChild(timestamp);
-
-    return taskItem;
-}*/
 
 function createTaskItem(task) {
     // Create task item element
@@ -494,7 +355,36 @@ function updateDividerVisibility() {
     }
 }
 
+// Function to filter tasks based on selected priority
+function filterTasksByPriority(priority) {
+    filteredTasks.length = 0; // Clear the filteredTasks array
 
+    if (priority === '') {
+        filteredTasks.push(...tasks.filter(task => !task.isCompleted));
+    } else {
+        const filtered = tasks.filter(task => {
+            if (priority === 'default') {
+                return (task.priority === '' || task.priority === 'default') && !task.isCompleted;
+            } else {
+                return task.priority === priority && !task.isCompleted;
+            }
+        });
+        filteredTasks.push(...filtered);
+    }
+    renderFilteredTasks();
+}
+
+function renderFilteredTasks() {
+    const activeTasksList = document.getElementById('active-tasks');
+    activeTasksList.innerHTML = '';
+
+    filteredTasks.forEach(task => {
+        const taskItem = createTaskItem(task);
+        activeTasksList.appendChild(taskItem);
+    });
+
+    updateDividerVisibility();
+}
 
 // Add new task when Add button is clicked
 addBtn.addEventListener('click', addNewTask);
@@ -579,6 +469,7 @@ collapseAllBtn.addEventListener('click', () => {
 // Get reference to the filter dropdown and reset button
 const filterDropdown = document.getElementById('filter-dropdown');
 const resetButton = document.getElementById('reset-toolbar');
+const filteredTasks = [];
 
 // Add event listener to the filter dropdown
 filterDropdown.addEventListener('change', () => {
@@ -587,30 +478,20 @@ filterDropdown.addEventListener('change', () => {
 });
 
 // Add event listener to the reset button
+/*resetButton.addEventListener('click', () => {
+    filterDropdown.value = ''; // Reset the dropdown selection
+    renderTasks(); // Re-render all tasks
+});*/
 resetButton.addEventListener('click', () => {
     filterDropdown.value = ''; // Reset the dropdown selection
+    filteredTasks.length = 0; // Clear the filteredTasks array
+    tasks.forEach(task => {
+        task.isExpanded = false; // Collapse all tasks
+    });
     renderTasks(); // Re-render all tasks
 });
 
-// Function to filter tasks based on selected priority
-function filterTasksByPriority(priority) {
-    const activeTasksList = document.getElementById('active-tasks');
-    activeTasksList.innerHTML = '';
-
-    if (priority === '') {
-        renderTasks(); // If no priority selected, render all tasks
-    } else {
-        const filteredTasks = tasks.filter(task => task.priority === priority && !task.isCompleted);
-        filteredTasks.forEach(task => {
-            const taskItem = createTaskItem(task);
-            activeTasksList.appendChild(taskItem);
-        });
-        updateDividerVisibility();
-    }
-}
-
 const currentTags = [];
-
 const currentTime = new Date(); // Get the current date and time
 const tasks = [
     {
