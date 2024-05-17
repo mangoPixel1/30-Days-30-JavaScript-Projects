@@ -317,3 +317,7 @@ ul {
 #active-tasks {
     margin-top: 10px;
 }
+
+.hidden {
+    display: none;
+}

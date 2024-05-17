@@ -195,8 +195,23 @@ function createTaskItem(task) {
     const editIcon = document.createElement('i');
     editIcon.classList.add('fa-solid', 'fa-pen-to-square');
 
+    const editConfirmIcon = document.createElement('i');
+    editConfirmIcon.classList.add('fa-solid', 'fa-check');
+
     editBtn.appendChild(editIcon);
     taskOptions.appendChild(editBtn);
+
+    editBtn.addEventListener('click', (event) => {
+        event.stopPropagation();
+        
+        if (editBtn.contains(editIcon)) {
+            editBtn.removeChild(editIcon);
+            editBtn.appendChild(editConfirmIcon);
+        } else {
+            editBtn.removeChild(editConfirmIcon);
+            editBtn.appendChild(editIcon);
+        }
+    });
 
     // Create delete button
     const deleteBtn = document.createElement('button');
@@ -258,7 +273,8 @@ function createTaskItem(task) {
     // Create timestamp element
     const timestamp = document.createElement('span');
     timestamp.classList.add('timestamp');
-    timestamp.textContent = task.timeStamp.toLocaleString(); // Format the timestamp as desired
+    //timestamp.textContent = task.timeStamp.toLocaleString(); // Format the timestamp as desired
+    timestamp.textContent = formatTimestamp(task.timeStamp); // Use the new formatTimestamp function
     taskDetails.appendChild(timestamp);
 
     return taskItem;
@@ -478,10 +494,6 @@ filterDropdown.addEventListener('change', () => {
 });
 
 // Add event listener to the reset button
-/*resetButton.addEventListener('click', () => {
-    filterDropdown.value = ''; // Reset the dropdown selection
-    renderTasks(); // Re-render all tasks
-});*/
 resetButton.addEventListener('click', () => {
     filterDropdown.value = ''; // Reset the dropdown selection
     filteredTasks.length = 0; // Clear the filteredTasks array
@@ -491,9 +503,14 @@ resetButton.addEventListener('click', () => {
     renderTasks(); // Re-render all tasks
 });
 
+// Save data to browser storage when user navigates away from page
+window.addEventListener('beforeunload', () => {
+    localStorage.setItem('tasksArr', JSON.stringify(tasks));
+});
+
 const currentTags = [];
 const currentTime = new Date(); // Get the current date and time
-const tasks = [
+/*const tasks = [
     {
         id: 100000,
         name: "shower",
@@ -534,8 +551,8 @@ const tasks = [
         timeStamp: currentTime,
         isExpanded: false
     }
-];
-const completedTasks = [];
+];*/
+const tasks = JSON.parse(localStorage.getItem('tasksArr')) || [];
 
 renderTasks();
 updateDividerVisibility();
