@@ -135,6 +135,8 @@ function renderTasks() {
     updateDividerVisibility();
 }
 
+let currentEditTask = null; // Global variable to keep track of the currently active edit task
+
 function createTaskItem(task) {
     // Create task item element
     const taskItem = document.createElement('li');
@@ -201,15 +203,152 @@ function createTaskItem(task) {
     editBtn.appendChild(editIcon);
     taskOptions.appendChild(editBtn);
 
+    // Unfinished solution!!!!!!
+    /*editBtn.addEventListener('click', (event) => {
+        event.stopPropagation();
+    
+        const taskItem = event.target.closest('.taskItem');
+        const taskText = taskItem.querySelector('.taskText');
+    
+        if (currentEditTask !== taskItem) { // Clicked task is not the one that was being edited
+            // Revert the previously edited task to its task text before editing and use edit icon
+            if (currentEditTask) {
+                const prevTaskText = currentEditTask.querySelector('.taskText');
+                const prevEditInput = currentEditTask.querySelector('input[type="text"]');
+                if (prevEditInput) {
+                    prevTaskText.textContent = prevEditInput.value;
+                    prevEditInput.replaceWith(prevTaskText);
+                }
+                const prevEditBtn = currentEditTask.querySelector('.editBtn');
+                prevEditBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
+                const prevDeleteBtn = currentEditTask.querySelector('.deleteBtn');
+                prevDeleteBtn.style.display = 'inline-block';
+            }
+        
+            // Toggle the edit icon of the clicked task to show confirm icon
+            editIcon.style.display = 'none';
+            editConfirmIcon.style.display = 'inline-block';
+            editBtn.appendChild(editConfirmIcon);
+        
+            // Show the edit input field, with task text set as its value
+            const editInput = document.createElement('input');
+            editInput.type = 'text';
+            editInput.value = taskText.textContent;
+            taskText.replaceWith(editInput);
+            editInput.focus();
+        
+            // While editing, display a button with the text "x" to the left of the edit button, delete when done
+            const cancelBtn = document.createElement('button');
+            cancelBtn.classList.add('cancelBtn');
+            cancelBtn.textContent = 'x';
+            taskOptions.insertBefore(cancelBtn, editBtn);
+        
+            // Click on edit button and enter key press to save the new text, update tasks array
+            editInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    const newTaskText = editInput.value;
+                    taskText.textContent = newTaskText;
+                    editInput.replaceWith(taskText);
+                    editIcon.style.display = 'inline-block';
+                    editConfirmIcon.style.display = 'none';
+                    cancelBtn.remove();
+                    const taskIndex = tasks.findIndex(task => task.id === parseInt(taskItem.dataset.taskId, 10));
+                    if (taskIndex !== -1) {
+                        tasks[taskIndex].name = newTaskText;
+                    }
+                    currentEditTask = null;
+                }
+            });
+        
+            cancelBtn.addEventListener('click', () => {
+                editInput.replaceWith(taskText);
+                editIcon.style.display = 'inline-block';
+                editConfirmIcon.style.display = 'none';
+                cancelBtn.remove();
+                currentEditTask = null;
+            });
+        
+            currentEditTask = taskItem;
+        }
+    });*/
+
     editBtn.addEventListener('click', (event) => {
         event.stopPropagation();
+    
+        const taskItem = event.target.closest('.taskItem');
+        const taskText = taskItem.querySelector('.taskText');
+    
+        if (currentEditTask !== taskItem) { // Clicked task is not the one that was being edited
+            // Revert the previously edited task to its task text before editing and use edit icon
+            if (currentEditTask) {
+                const prevTaskText = currentEditTask.querySelector('.taskText');
+                const prevEditInput = currentEditTask.querySelector('input[type="text"]');
+                if (prevEditInput) {
+                    prevTaskText.textContent = prevEditInput.value;
+                    prevEditInput.replaceWith(prevTaskText);
+                }
+                const prevEditBtn = currentEditTask.querySelector('.editBtn');
+                prevEditBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
+                const prevCancelBtn = currentEditTask.querySelector('.cancelBtn');
+                if (prevCancelBtn) {
+                    prevCancelBtn.remove();
+                }
+            }
         
-        if (editBtn.contains(editIcon)) {
-            editBtn.removeChild(editIcon);
+            // Toggle the edit icon of the clicked task to show confirm icon
+            editIcon.style.display = 'none';
+            editConfirmIcon.style.display = 'inline-block';
+            editBtn.innerHTML = '';
             editBtn.appendChild(editConfirmIcon);
-        } else {
-            editBtn.removeChild(editConfirmIcon);
-            editBtn.appendChild(editIcon);
+        
+            // Show the edit input field, with task text set as its value
+            const editInput = document.createElement('input');
+            editInput.type = 'text';
+            editInput.value = taskText.textContent;
+            taskText.replaceWith(editInput);
+            editInput.focus();
+        
+            // While editing, display a button with the text "x" to the left of the edit button, delete when done
+            const cancelBtn = document.createElement('button');
+            cancelBtn.classList.add('cancelBtn');
+            cancelBtn.textContent = 'x';
+            taskOptions.insertBefore(cancelBtn, editBtn);
+        
+            // Click on edit button or press Enter key to save the new text, update tasks array
+            const saveEdit = () => {
+                const newTaskText = editInput.value;
+                taskText.textContent = newTaskText;
+                editInput.replaceWith(taskText);
+                editIcon.style.display = 'inline-block';
+                editConfirmIcon.style.display = 'none';
+                editBtn.innerHTML = '';
+                editBtn.appendChild(editIcon);
+                cancelBtn.remove();
+                const taskIndex = tasks.findIndex(task => task.id === task.id);
+                if (taskIndex !== -1) {
+                    tasks[taskIndex].name = newTaskText;
+                }
+                currentEditTask = null;
+            };
+        
+            editBtn.addEventListener('click', saveEdit);
+            editInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    saveEdit();
+                }
+            });
+        
+            cancelBtn.addEventListener('click', () => {
+                editInput.replaceWith(taskText);
+                editIcon.style.display = 'inline-block';
+                editConfirmIcon.style.display = 'none';
+                editBtn.innerHTML = '';
+                editBtn.appendChild(editIcon);
+                cancelBtn.remove();
+                currentEditTask = null;
+            });
+        
+            currentEditTask = taskItem;
         }
     });
 
@@ -273,7 +412,6 @@ function createTaskItem(task) {
     // Create timestamp element
     const timestamp = document.createElement('span');
     timestamp.classList.add('timestamp');
-    //timestamp.textContent = task.timeStamp.toLocaleString(); // Format the timestamp as desired
     timestamp.textContent = formatTimestamp(task.timeStamp); // Use the new formatTimestamp function
     taskDetails.appendChild(timestamp);
 
@@ -510,6 +648,7 @@ window.addEventListener('beforeunload', () => {
 
 const currentTags = [];
 const currentTime = new Date(); // Get the current date and time
+const tasks = JSON.parse(localStorage.getItem('tasksArr')) || [];
 /*const tasks = [
     {
         id: 100000,
@@ -552,7 +691,6 @@ const currentTime = new Date(); // Get the current date and time
         isExpanded: false
     }
 ];*/
-const tasks = JSON.parse(localStorage.getItem('tasksArr')) || [];
 
 renderTasks();
 updateDividerVisibility();
