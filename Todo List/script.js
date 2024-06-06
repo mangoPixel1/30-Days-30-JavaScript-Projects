@@ -192,6 +192,7 @@ function createTaskItem(task) {
     // Create task edit button
     const editBtn = document.createElement('button');
     editBtn.classList.add('editBtn');
+    editBtn.title = 'Edit';
 
     // Create Font Awesome options button
     const editIcon = document.createElement('i');
@@ -203,90 +204,62 @@ function createTaskItem(task) {
     editBtn.appendChild(editIcon);
     taskOptions.appendChild(editBtn);
 
-    // Unfinished solution!!!!!!
-    editBtn.addEventListener('click', (event) => {
-        event.stopPropagation();
+    editBtn.addEventListener('click', () => {
+        // Replace task text with an input field
+        const inputField = document.createElement('input');
+        inputField.type = 'text';
+        inputField.value = task.name;
+        inputField.classList.add('edit-input');
     
-        const taskItem = event.target.closest('.taskItem');
-        const taskText = taskItem.querySelector('.taskText');
+        // Replace task text with input field
+        taskText.replaceWith(inputField);
     
-        if (currentEditTask !== taskItem) { // Clicked task is not the one that was being edited
-            // Revert the previously edited task to its task text before editing and use edit icon
-            if (currentEditTask) {
-                const prevTaskText = currentEditTask.querySelector('.taskText');
-                const prevEditInput = currentEditTask.querySelector('input[type="text"]');
-                if (prevEditInput) {
-                    prevTaskText.textContent = prevEditInput.value;
-                    prevEditInput.replaceWith(prevTaskText);
-                }
-                const prevEditBtn = currentEditTask.querySelector('.editBtn');
-                prevEditBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
-                const prevCancelBtn = currentEditTask.querySelector('.cancelBtn');
-                if (prevCancelBtn) {
-                    prevCancelBtn.remove();
-                }
+        // Replace edit icon with confirm icon
+        editIcon.replaceWith(editConfirmIcon);
+    
+        // Focus on the input field
+        inputField.focus();
+    
+        // Flag to track if the edit is confirmed
+        let isEditConfirmed = false;
+    
+        // Add event listener to confirm edit
+        editBtn.removeEventListener('click', arguments.callee);
+        editBtn.addEventListener('click', () => {
+            const newTaskName = inputField.value.trim();
+            if (newTaskName.length !== 0) {
+                task.name = newTaskName;
+                isEditConfirmed = true;
+                renderTasks();
+            } else {
+                // If the input is empty, revert to the original task name
+                inputField.replaceWith(taskText);
+                editConfirmIcon.replaceWith(editIcon);
             }
-        
-            // Toggle the edit icon of the clicked task to show confirm icon
-            editIcon.style.display = 'none';
-            editConfirmIcon.style.display = 'inline-block';
-            editBtn.innerHTML = '';
-            editBtn.appendChild(editConfirmIcon);
-        
-            // Show the edit input field, with task text set as its value
-            const editInput = document.createElement('input');
-            editInput.type = 'text';
-            editInput.value = taskText.textContent;
-            taskText.replaceWith(editInput);
-            editInput.focus();
-        
-            // While editing, display a button with the text "x" to the left of the edit button, delete when done
-            const cancelBtn = document.createElement('button');
-            cancelBtn.classList.add('cancelBtn');
-            cancelBtn.textContent = 'x';
-            taskOptions.insertBefore(cancelBtn, editBtn);
-        
-            // Click on edit button or press Enter key to save the new text, update tasks array
-            const saveEdit = () => {
-                const newTaskText = editInput.value;
-                taskText.textContent = newTaskText;
-                editInput.replaceWith(taskText);
-                editIcon.style.display = 'inline-block';
-                editConfirmIcon.style.display = 'none';
-                editBtn.innerHTML = '';
-                editBtn.appendChild(editIcon);
-                cancelBtn.remove();
-                const taskIndex = tasks.findIndex(task => task.id === task.id);
-                if (taskIndex !== -1) {
-                    tasks[taskIndex].name = newTaskText;
+        });
+    
+        // Add event listener to handle Enter key press
+        inputField.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                editBtn.click();
+            }
+        });
+    
+        // Add event listener to the input field to revert changes on blur
+        inputField.addEventListener('blur', (event) => {
+            // Delay the revert to allow the click event on the edit button to happen first
+            setTimeout(() => {
+                if (!isEditConfirmed) {
+                    renderTasks();
                 }
-                currentEditTask = null;
-            };
-        
-            editBtn.addEventListener('click', saveEdit);
-            editInput.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter') {
-                    saveEdit();
-                }
-            });
-        
-            cancelBtn.addEventListener('click', () => {
-                editInput.replaceWith(taskText);
-                editIcon.style.display = 'inline-block';
-                editConfirmIcon.style.display = 'none';
-                editBtn.innerHTML = '';
-                editBtn.appendChild(editIcon);
-                cancelBtn.remove();
-                currentEditTask = null;
-            });
-        
-            currentEditTask = taskItem;
-        }
+            }, 100);
+        });
     });
 
     // Create delete button
     const deleteBtn = document.createElement('button');
     deleteBtn.classList.add('deleteBtn');
+    deleteBtn.title = 'Delete';
 
     // Create Font Awesome trash icon
     const trashIcon = document.createElement('i');
@@ -301,7 +274,7 @@ function createTaskItem(task) {
         renderTasks();
     });
 
-    // Add click event listener to the task-content div to expand/collapse task
+    // Add click event listener to the task-content div to expand/collapse the task
     taskContent.addEventListener('click', (event) => {
         // Check if the clicked element is not a button, checkbox, task text, or edit button
         if (
@@ -344,7 +317,7 @@ function createTaskItem(task) {
     // Create timestamp element
     const timestamp = document.createElement('span');
     timestamp.classList.add('timestamp');
-    timestamp.textContent = formatTimestamp(task.timeStamp); // Use the new formatTimestamp function
+    timestamp.textContent = formatTimestamp(task.timeStamp);
     taskDetails.appendChild(timestamp);
 
     return taskItem;
@@ -352,7 +325,11 @@ function createTaskItem(task) {
 
 function formatTimestamp(timestamp) {
     const date = new Date(timestamp);
-    return date.toLocaleString(); // Adjust the formatting as needed
+    const options = {
+        dateStyle: 'medium', // or 'long', 'medium', 'short'
+        timeStyle: 'short' // or 'long', 'medium'
+    };
+    return date.toLocaleString(undefined, options);
 }
 
 // Render the tags from currentTags array into HTML
@@ -626,3 +603,91 @@ const tasks = JSON.parse(localStorage.getItem('tasksArr')) || [];
 
 renderTasks();
 updateDividerVisibility();
+
+/*const newTaskName = prompt('Enter new task name:');
+
+        if (newTaskName.length !== 0) {
+            task.name = newTaskName;
+            renderTasks();
+        }*/
+// Unfinished solution!!!!!!
+    /*editBtn.addEventListener('click', (event) => {
+        event.stopPropagation();
+    
+        const taskItem = event.target.closest('.taskItem');
+        const taskText = taskItem.querySelector('.taskText');
+    
+        if (currentEditTask !== taskItem) { // Clicked task is not the one that was being edited
+            // Revert the previously edited task to its task text before editing and use edit icon
+            if (currentEditTask) {
+                const prevTaskText = currentEditTask.querySelector('.taskText');
+                const prevEditInput = currentEditTask.querySelector('input[type="text"]');
+                if (prevEditInput) {
+                    prevTaskText.textContent = prevEditInput.value;
+                    prevEditInput.replaceWith(prevTaskText);
+                }
+                const prevEditBtn = currentEditTask.querySelector('.editBtn');
+                prevEditBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
+                const prevCancelBtn = currentEditTask.querySelector('.cancelBtn');
+                if (prevCancelBtn) {
+                    prevCancelBtn.remove();
+                }
+            }
+        
+            // Toggle the edit icon of the clicked task to show confirm icon
+            editIcon.style.display = 'none';
+            editConfirmIcon.style.display = 'inline-block';
+            editBtn.innerHTML = '';
+            editBtn.appendChild(editConfirmIcon);
+        
+            // Show the edit input field, with task text set as its value
+            const editInput = document.createElement('input');
+            editInput.type = 'text';
+            editInput.value = taskText.textContent;
+            taskText.replaceWith(editInput);
+            editInput.focus();
+        
+            // While editing, display a button with the text "x" to the left of the edit button, delete when done
+            const cancelBtn = document.createElement('button');
+            cancelBtn.classList.add('cancelBtn');
+            cancelBtn.textContent = 'x';
+            taskOptions.insertBefore(cancelBtn, editBtn);
+        
+            // Click on edit button or press Enter key to save the new text, update tasks array
+            const saveEdit = () => {
+                const newTaskText = editInput.value;
+                taskText.textContent = newTaskText;
+                editInput.replaceWith(taskText);
+                editIcon.style.display = 'inline-block';
+                editConfirmIcon.style.display = 'none';
+                editBtn.innerHTML = '';
+                editBtn.appendChild(editIcon);
+                cancelBtn.remove();
+                const taskIndex = tasks.findIndex(task => task.id === task.id);
+                if (taskIndex !== -1) {
+                    tasks[taskIndex].name = newTaskText;
+                }
+                currentEditTask = null;
+            };
+        
+            editBtn.addEventListener('click', saveEdit);
+            editInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    saveEdit();
+                }
+            });
+        
+            cancelBtn.addEventListener('click', () => {
+                editInput.replaceWith(taskText);
+                editIcon.style.display = 'inline-block';
+                editConfirmIcon.style.display = 'none';
+                editBtn.innerHTML = '';
+                editBtn.appendChild(editIcon);
+                cancelBtn.remove();
+                currentEditTask = null;
+            });
+        
+            currentEditTask = taskItem;
+        }
+    });
+    */
