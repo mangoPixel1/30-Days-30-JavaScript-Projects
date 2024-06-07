@@ -1,15 +1,27 @@
-// HTML tag references
-const textInputBox = document.getElementById('newTaskInput'); // New task input
-const clearBtn = document.getElementById('clearBtn'); // Clear button (x)
-const addBtn = document.getElementById('addBtn'); // Add button
+// Input-related variables
+const textInputBox = document.getElementById('newTaskInput');
+const clearBtn = document.getElementById('clearBtn');
+const addBtn = document.getElementById('addBtn');
+const newTaskOptions = document.getElementById('newTaskOptions');
+const taskDescriptionInput = document.getElementById('taskDescriptionInput');
+const currentCount = document.querySelector('.current-count');
+const tagsInput = document.getElementById('tagsInput');
+const addTagBtn = document.getElementById('addTagBtn');
 
-const newTaskOptions = document.getElementById('newTaskOptions'); // Options when adding new task (priority, description, tags)
-const taskDescriptionInput = document.getElementById('taskDescriptionInput'); // Description textarea
-const tagsInput = document.getElementById('tagsInput'); // Tag input textbox
-const addTagBtn = document.getElementById('addTagBtn'); // Add tag button
+// Task list variables
+const activeTasksList = document.getElementById('active-tasks');
+const completedTasksList = document.getElementById('completed-tasks');
 
-const activeTasksList = document.getElementById('active-tasks'); // Tasks list
-const completedTasksList = document.getElementById('completed-tasks'); // Completed tasks list
+// Toolbar variables
+const expandAllBtn = document.getElementById('expand-all');
+const collapseAllBtn = document.getElementById('collapse-all');
+const filterDropdown = document.getElementById('filter-dropdown');
+const resetButton = document.getElementById('reset-toolbar');
+
+// Data variables
+const tasks = JSON.parse(localStorage.getItem('tasksArr')) || [];
+const currentTags = [];
+const filteredTasks = [];
 
 // Generates a unique id by checking if the newly created id is already in use by another task
 function generateUniqueId(tasks) {
@@ -75,8 +87,6 @@ function addNewTask() {
 
     // Re-render the cleared currentTags array
     renderCurrentTags();
-
-    
 }
 
 // Get the name of the CSS class
@@ -205,55 +215,7 @@ function createTaskItem(task) {
     taskOptions.appendChild(editBtn);
 
     editBtn.addEventListener('click', () => {
-        // Replace task text with an input field
-        const inputField = document.createElement('input');
-        inputField.type = 'text';
-        inputField.value = task.name;
-        inputField.classList.add('edit-input');
-    
-        // Replace task text with input field
-        taskText.replaceWith(inputField);
-    
-        // Replace edit icon with confirm icon
-        editIcon.replaceWith(editConfirmIcon);
-    
-        // Focus on the input field
-        inputField.focus();
-    
-        // Flag to track if the edit is confirmed
-        let isEditConfirmed = false;
-    
-        // Add event listener to confirm edit
-        editBtn.removeEventListener('click', arguments.callee);
-        editBtn.addEventListener('click', () => {
-            const newTaskName = inputField.value.trim();
-            if (newTaskName.length !== 0) {
-                task.name = newTaskName;
-                isEditConfirmed = true;
-                renderTasks();
-            } else {
-                // If the input is empty, revert to the original task name
-                inputField.replaceWith(taskText);
-                editConfirmIcon.replaceWith(editIcon);
-            }
-        });
-    
-        // Add event listener to handle Enter key press
-        inputField.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                editBtn.click();
-            }
-        });
-    
-        // Add event listener to the input field to revert changes on blur
-        inputField.addEventListener('blur', (event) => {
-            // Delay the revert to allow the click event on the edit button to happen first
-            setTimeout(() => {
-                if (!isEditConfirmed) {
-                    renderTasks();
-                }
-            }, 100);
-        });
+        handleEditButtonClick(task, taskText, editBtn, editIcon, editConfirmIcon);
     });
 
     // Create delete button
@@ -321,6 +283,58 @@ function createTaskItem(task) {
     taskDetails.appendChild(timestamp);
 
     return taskItem;
+}
+
+function handleEditButtonClick(task, taskText, editBtn, editIcon, editConfirmIcon) {
+    // Replace task text with an input field
+    const inputField = document.createElement('input');
+    inputField.type = 'text';
+    inputField.value = task.name;
+    inputField.classList.add('edit-input');
+
+    // Replace task text with input field
+    taskText.replaceWith(inputField);
+
+    // Replace edit icon with confirm icon
+    editIcon.replaceWith(editConfirmIcon);
+
+    // Focus on the input field
+    inputField.focus();
+
+    // Flag to track if the edit is confirmed
+    let isEditConfirmed = false;
+
+    // Add event listener to confirm edit
+    editBtn.removeEventListener('click', arguments.callee);
+    editBtn.addEventListener('click', () => {
+        const newTaskName = inputField.value.trim();
+        if (newTaskName.length !== 0) {
+            task.name = newTaskName;
+            isEditConfirmed = true;
+            renderTasks();
+        } else {
+            // If the input is empty, revert to the original task name
+            inputField.replaceWith(taskText);
+            editConfirmIcon.replaceWith(editIcon);
+        }
+    });
+
+    // Add event listener to handle Enter key press
+    inputField.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            editBtn.click();
+        }
+    });
+
+    // Add event listener to the input field to revert changes on blur
+    inputField.addEventListener('blur', (event) => {
+        // Delay the revert to allow the click event on the edit button to happen first
+        setTimeout(() => {
+            if (!isEditConfirmed) {
+                renderTasks();
+            }
+        }, 100);
+    });
 }
 
 function formatTimestamp(timestamp) {
@@ -449,245 +463,112 @@ function renderFilteredTasks() {
     updateDividerVisibility();
 }
 
-// Add new task when Add button is clicked
-addBtn.addEventListener('click', addNewTask);
+// Set up event listeners
+function setupInputListeners() {
+    // Add new task when Add button is clicked
+    addBtn.addEventListener('click', addNewTask);
 
-// Add new task when Enter key is pressed
-textInputBox.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' || event.keyCode === 13) {
-        addNewTask();
-    }
-});
+    // Add new task when Enter key is pressed
+    textInputBox.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.keyCode === 13) {
+            addNewTask();
+        }
+    });
 
-// Display options when input box has text
-textInputBox.addEventListener('input', () => {
-    if (textInputBox.value.trim() !== '') {
-        newTaskOptions.style.display = 'block';
-    } else {
+    // Display options when input box has text
+    textInputBox.addEventListener('input', () => {
+        if (textInputBox.value.trim() !== '') {
+            newTaskOptions.style.display = 'block';
+        } else {
+            newTaskOptions.style.display = 'none';
+        }
+    });
+
+    // Hide options and clear button when the clear button is clicked
+    clearBtn.addEventListener('click', () => {
+        textInputBox.value = '';
         newTaskOptions.style.display = 'none';
-    }
-});
-
-// Hide options and clear button when the clear button is clicked
-clearBtn.addEventListener('click', () => {
-    textInputBox.value = '';
-    newTaskOptions.style.display = 'none';
-    clearBtn.style.display = 'none'; // Hide clear button
-});
-
-// Show clear button when needed (e.g., when input box has text)
-textInputBox.addEventListener('input', () => {
-    if (textInputBox.value.trim() !== '') {
-        clearBtn.style.display = 'flex'; // Show clear button
-    } else {
-        clearBtn.style.display = 'none'; // Hide clear button
-    }
-});
-
-// Update character count and display red border when input exceeds character limit
-const currentCount = document.querySelector('.current-count'); // Character count element
-taskDescriptionInput.addEventListener('input', () => {
-    const count = taskDescriptionInput.value.length;
-    currentCount.textContent = count;
-
-    if (count > 200) {
-        taskDescriptionInput.classList.add('max-length');
-        currentCount.classList.add('max-length');
-    } else {
-        taskDescriptionInput.classList.remove('max-length');
-        currentCount.classList.remove('max-length');
-    }
-});
-
-// Add a new tag when add tag button is clicked
-addTagBtn.addEventListener('click', addNewTag);
-
-// Add a new tag when Enter key is pressed
-tagsInput.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' || event.keyCode === 13) {
-        addNewTag();
-    }
-});
-
-// Get references to the buttons
-const expandAllBtn = document.getElementById('expand-all');
-const collapseAllBtn = document.getElementById('collapse-all');
-
-// Event listener for the "Expand All" button
-expandAllBtn.addEventListener('click', () => {
-    tasks.forEach(task => {
-        task.isExpanded = true;
+        clearBtn.style.display = 'none';
     });
-    renderTasks();
-});
 
-// Event listener for the "Collapse All" button
-collapseAllBtn.addEventListener('click', () => {
-    tasks.forEach(task => {
-        task.isExpanded = false;
+    // Show clear button when needed (e.g., when input box has text)
+    textInputBox.addEventListener('input', () => {
+        if (textInputBox.value.trim() !== '') {
+            clearBtn.style.display = 'flex';
+        } else {
+            clearBtn.style.display = 'none';
+        }
     });
-    renderTasks();
-});
 
-// Get reference to the filter dropdown and reset button
-const filterDropdown = document.getElementById('filter-dropdown');
-const resetButton = document.getElementById('reset-toolbar');
-const filteredTasks = [];
+    // Update character count and display red border when input exceeds character limit
+    const currentCount = document.querySelector('.current-count'); // Character count element
+    taskDescriptionInput.addEventListener('input', () => {
+        const count = taskDescriptionInput.value.length;
+        currentCount.textContent = count;
 
-// Add event listener to the filter dropdown
-filterDropdown.addEventListener('change', () => {
-    const selectedPriority = filterDropdown.value;
-    filterTasksByPriority(selectedPriority);
-});
-
-// Add event listener to the reset button
-resetButton.addEventListener('click', () => {
-    filterDropdown.value = ''; // Reset the dropdown selection
-    filteredTasks.length = 0; // Clear the filteredTasks array
-    tasks.forEach(task => {
-        task.isExpanded = false; // Collapse all tasks
+        if (count > 200) {
+            taskDescriptionInput.classList.add('max-length');
+            currentCount.classList.add('max-length');
+        } else {
+            taskDescriptionInput.classList.remove('max-length');
+            currentCount.classList.remove('max-length');
+        }
     });
-    renderTasks(); // Re-render all tasks
-});
 
-// Save data to browser storage when user navigates away from page
-window.addEventListener('beforeunload', () => {
-    localStorage.setItem('tasksArr', JSON.stringify(tasks));
-});
+    // Add a new tag when add tag button is clicked
+    addTagBtn.addEventListener('click', addNewTag);
 
-const currentTags = [];
-const currentTime = new Date(); // Get the current date and time
-const tasks = JSON.parse(localStorage.getItem('tasksArr')) || [];
-/*const tasks = [
-    {
-        id: 100000,
-        name: "shower",
-        description: "quick 5 minute shower",
-        priority: "low",
-        tags: ["hygiene"],
-        isCompleted: false,
-        timeStamp: currentTime,
-        isExpanded: false
-    },
-    {
-        id: 100001,
-        name: "eat breakfast",
-        description: "oatmeal and protein shake",
-        priority: "high",
-        tags: ["meal", "breakfast"],
-        isCompleted: false,
-        timeStamp: currentTime,
-        isExpanded: false
-    },
-    {
-        id: 100002,
-        name: "watch react course",
-        description: "LearnWebCode 10 Days of React",
-        priority: "medium",
-        tags: ["coding", "course", "react", "study"],
-        isCompleted: false,
-        timeStamp: currentTime,
-        isExpanded: false
-    },
-    {
-        id: 100003,
-        name: "ride bike",
-        description: "5 mile ride around the neighborhood",
-        priority: "default",
-        tags: ["exercise", "recreation", "outdoors"],
-        isCompleted: false,
-        timeStamp: currentTime,
-        isExpanded: false
-    }
-];*/
+    // Add a new tag when Enter key is pressed
+    tagsInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.keyCode === 13) {
+            addNewTag();
+        }
+    });
+}
+function setupToolbarListeners() {
+    // Event listener for the "Expand All" button
+    expandAllBtn.addEventListener('click', () => {
+        tasks.forEach(task => {
+            task.isExpanded = true;
+        });
+        renderTasks();
+    });
+
+    // Event listener for the "Collapse All" button
+    collapseAllBtn.addEventListener('click', () => {
+        tasks.forEach(task => {
+            task.isExpanded = false;
+        });
+        renderTasks();
+    });
+
+    // Add event listener to the filter dropdown
+    filterDropdown.addEventListener('change', () => {
+        const selectedPriority = filterDropdown.value;
+        filterTasksByPriority(selectedPriority);
+    });
+
+    // Add event listener to the reset button
+    resetButton.addEventListener('click', () => {
+        filterDropdown.value = '';
+        filteredTasks.length = 0;
+        tasks.forEach(task => {
+            task.isExpanded = false;
+        });
+        renderTasks();
+    });
+}
+function setupStorageListeners() {
+    // Save data to browser storage when user navigates away from page
+    window.addEventListener('beforeunload', () => {
+        localStorage.setItem('tasksArr', JSON.stringify(tasks));
+    });
+}
+
+// Call the setup functions
+setupInputListeners();
+setupToolbarListeners();
+setupStorageListeners();
 
 renderTasks();
 updateDividerVisibility();
-
-/*const newTaskName = prompt('Enter new task name:');
-
-        if (newTaskName.length !== 0) {
-            task.name = newTaskName;
-            renderTasks();
-        }*/
-// Unfinished solution!!!!!!
-    /*editBtn.addEventListener('click', (event) => {
-        event.stopPropagation();
-    
-        const taskItem = event.target.closest('.taskItem');
-        const taskText = taskItem.querySelector('.taskText');
-    
-        if (currentEditTask !== taskItem) { // Clicked task is not the one that was being edited
-            // Revert the previously edited task to its task text before editing and use edit icon
-            if (currentEditTask) {
-                const prevTaskText = currentEditTask.querySelector('.taskText');
-                const prevEditInput = currentEditTask.querySelector('input[type="text"]');
-                if (prevEditInput) {
-                    prevTaskText.textContent = prevEditInput.value;
-                    prevEditInput.replaceWith(prevTaskText);
-                }
-                const prevEditBtn = currentEditTask.querySelector('.editBtn');
-                prevEditBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
-                const prevCancelBtn = currentEditTask.querySelector('.cancelBtn');
-                if (prevCancelBtn) {
-                    prevCancelBtn.remove();
-                }
-            }
-        
-            // Toggle the edit icon of the clicked task to show confirm icon
-            editIcon.style.display = 'none';
-            editConfirmIcon.style.display = 'inline-block';
-            editBtn.innerHTML = '';
-            editBtn.appendChild(editConfirmIcon);
-        
-            // Show the edit input field, with task text set as its value
-            const editInput = document.createElement('input');
-            editInput.type = 'text';
-            editInput.value = taskText.textContent;
-            taskText.replaceWith(editInput);
-            editInput.focus();
-        
-            // While editing, display a button with the text "x" to the left of the edit button, delete when done
-            const cancelBtn = document.createElement('button');
-            cancelBtn.classList.add('cancelBtn');
-            cancelBtn.textContent = 'x';
-            taskOptions.insertBefore(cancelBtn, editBtn);
-        
-            // Click on edit button or press Enter key to save the new text, update tasks array
-            const saveEdit = () => {
-                const newTaskText = editInput.value;
-                taskText.textContent = newTaskText;
-                editInput.replaceWith(taskText);
-                editIcon.style.display = 'inline-block';
-                editConfirmIcon.style.display = 'none';
-                editBtn.innerHTML = '';
-                editBtn.appendChild(editIcon);
-                cancelBtn.remove();
-                const taskIndex = tasks.findIndex(task => task.id === task.id);
-                if (taskIndex !== -1) {
-                    tasks[taskIndex].name = newTaskText;
-                }
-                currentEditTask = null;
-            };
-        
-            editBtn.addEventListener('click', saveEdit);
-            editInput.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter') {
-                    saveEdit();
-                }
-            });
-        
-            cancelBtn.addEventListener('click', () => {
-                editInput.replaceWith(taskText);
-                editIcon.style.display = 'inline-block';
-                editConfirmIcon.style.display = 'none';
-                editBtn.innerHTML = '';
-                editBtn.appendChild(editIcon);
-                cancelBtn.remove();
-                currentEditTask = null;
-            });
-        
-            currentEditTask = taskItem;
-        }
-    });
-    */
