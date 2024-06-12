@@ -321,3 +321,39 @@ ul {
 .hidden {
     display: none;
 }
+
+.edit-input {
+    font-size: 18px;
+    font-weight: inherit;
+    padding: 0;
+    margin: 0 0 0 8px;
+    border: none;
+    background: transparent;
+    width: 300px;
+    max-width: 300px;
+    box-sizing: border-box;
+    display: inline-block;
+}
+
+.task-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.task-content label {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+.taskText {
+    margin-left: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
