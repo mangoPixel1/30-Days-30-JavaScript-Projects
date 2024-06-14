@@ -146,7 +146,17 @@ function renderTasks() {
     updateDividerVisibility();
 }
 
-let currentEditTask = null; // Global variable to keep track of the currently active edit task
+function renderFilteredTasks() {
+    const activeTasksList = document.getElementById("active-tasks");
+    activeTasksList.innerHTML = "";
+
+    filteredTasks.forEach((task) => {
+        const taskItem = createTaskItem(task);
+        activeTasksList.appendChild(taskItem);
+    });
+
+    updateDividerVisibility();
+}
 
 function createTaskItem(task) {
     // Create task item element
@@ -195,6 +205,11 @@ function createTaskItem(task) {
     taskText.textContent = task.name;
     label.appendChild(taskText);
 
+    // Prevents the task from being marked as complete when task text is clicked
+    taskText.addEventListener('click', (event) => {
+        event.preventDefault();
+    });
+
     // Create task options element
     const taskOptions = document.createElement("div");
     taskOptions.classList.add("taskOptions");
@@ -235,10 +250,18 @@ function createTaskItem(task) {
         renderTasks();
     });
 
-    // Add click event listener to the task-content div to expand/collapse the task
-    taskContent.addEventListener("click", (event) => {
-        // Check if the clicked element is not a button, checkbox, task text, or edit button
-        if (!event.target.matches("button") && !event.target.matches('input[type="checkbox"]') && !event.target.matches(".taskText") && !event.target.closest(".editBtn")) {
+    // Add click event listener to the taskItem (li) to expand/collapse the task
+    taskItem.addEventListener("click", (event) => {
+        // Check if the clicked element is a button, checkbox, or edit button
+        const isButton = event.target.matches("button");
+        const isCheckbox = event.target.matches('input[type="checkbox"]');
+        const isEditButton = event.target.closest(".editBtn");
+
+        // Check if the clicked element is within the task text, description, tags, or timestamp
+        const isTextElement = event.target.closest(".taskText, .task-description, .tags-list, .timestamp");
+
+        // If the clicked element is not a button, checkbox, edit button, or within text elements
+        if (!isButton && !isCheckbox && !isEditButton && !isTextElement) {
             // Toggle the isExpanded property of the task
             task.isExpanded = !task.isExpanded;
 
@@ -418,18 +441,6 @@ function filterTasksByPriority(priority) {
         filteredTasks.push(...filtered);
     }
     renderFilteredTasks();
-}
-
-function renderFilteredTasks() {
-    const activeTasksList = document.getElementById("active-tasks");
-    activeTasksList.innerHTML = "";
-
-    filteredTasks.forEach((task) => {
-        const taskItem = createTaskItem(task);
-        activeTasksList.appendChild(taskItem);
-    });
-
-    updateDividerVisibility();
 }
 
 // Set up event listeners
