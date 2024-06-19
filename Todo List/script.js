@@ -215,6 +215,46 @@ function createTaskItem(task) {
     taskOptions.classList.add("taskOptions");
     taskContent.appendChild(taskOptions);
 
+    // Create show details button
+    const showDetailsBtn = document.createElement('button');
+    showDetailsBtn.classList.add('showDetailsBtn');
+    showDetailsBtn.title = 'Show task details';
+
+    // Create Font Awesome show details EXPAND icon
+    const showDetailsExpandIcon = document.createElement('i');
+    showDetailsExpandIcon.classList.add('fa-solid', 'fa-chevron-down');
+
+    // Create Font Awesome show details COLLAPSE icon
+    const showDetailsCollapseIcon = document.createElement('i');
+    showDetailsCollapseIcon.classList.add('fa-solid', 'fa-chevron-up');
+
+    // Show details button icon based on current state
+    if (task.isExpanded) {
+        showDetailsBtn.appendChild(showDetailsCollapseIcon);
+    } else {
+        showDetailsBtn.appendChild(showDetailsExpandIcon);
+    }
+
+    taskOptions.appendChild(showDetailsBtn);
+
+    // Add click event listener to the show details button to expand/collapse the task
+    showDetailsBtn.addEventListener('click', () => {
+        // Toggle the isExpanded property of the task
+        task.isExpanded = !task.isExpanded;
+
+        // Toggle the 'show-details' class on the taskItem to show/hide task details
+        taskItem.classList.toggle("show-details");
+
+        // Display the appropriate icon for the show details button
+        if (task.isExpanded) {
+            showDetailsBtn.removeChild(showDetailsExpandIcon);
+            showDetailsBtn.appendChild(showDetailsCollapseIcon);
+        } else {
+            showDetailsBtn.removeChild(showDetailsCollapseIcon);
+            showDetailsBtn.appendChild(showDetailsExpandIcon);
+        }
+    });
+
     // Create task edit button
     const editBtn = document.createElement('button');
     editBtn.classList.add('editBtn');
@@ -251,7 +291,7 @@ function createTaskItem(task) {
     });
 
     // Add click event listener to the taskItem (li) to expand/collapse the task
-    taskItem.addEventListener("click", (event) => {
+    /*taskItem.addEventListener("click", (event) => {
         // Check if the clicked element is a button, checkbox, or edit button
         const isButton = event.target.matches("button");
         const isCheckbox = event.target.matches('input[type="checkbox"]');
@@ -268,7 +308,7 @@ function createTaskItem(task) {
             // Toggle the 'show-details' class on the taskItem to show/hide task details
             taskItem.classList.toggle("show-details");
         }
-    });
+    });*/
 
     // Create task details element
     const taskDetails = document.createElement("div");
@@ -466,9 +506,17 @@ function setupInputListeners() {
 
     // Hide options and clear button when the clear button is clicked
     clearBtn.addEventListener("click", () => {
-        textInputBox.value = "";
         newTaskOptions.style.display = "none";
         clearBtn.style.display = "none";
+        
+        // Clear the input fields
+        textInputBox.value = "";
+        document.getElementById("low-priority").checked = false;
+        document.getElementById("medium-priority").checked = false;
+        document.getElementById("high-priority").checked = false;
+        document.getElementById("taskDescriptionInput").value = "";
+        document.getElementById("tagsInput").value = "";
+        currentTags.length = 0;
     });
 
     // Show clear button when needed (e.g., when input box has text)
