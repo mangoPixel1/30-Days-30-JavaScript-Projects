@@ -27,7 +27,7 @@ ul {
     padding: 25px 30px 30px 30px;
     width: 500px;
     max-width: 500px;
-    background: #FFF;
+    background: #fff;
     border-radius: 5px;
 }
 
@@ -121,7 +121,7 @@ ul {
 }
 
 .taskText {
-    margin-left: 8px;
+    margin-left: 0px;
     font-size: 18px;
     font-weight: bold;
     flex-grow: 1;
@@ -151,29 +151,32 @@ ul {
 }
 
 /* Priority Styles */
-.priority-low, .priority-medium, .priority-high, .priority-default {
+.priority-low,
+.priority-medium,
+.priority-high,
+.priority-default {
     border-style: solid;
     border-width: 2px;
 }
 
 .priority-low {
-    border-color: #FFFF00;
-    background-color: #FFFFF8;
+    border-color: #ffff00;
+    background-color: #fffff8;
 }
 
 .priority-medium {
-    border-color: #FFA500;
-    background-color: #FFF8F0;
+    border-color: #ffa500;
+    background-color: #fff8f0;
 }
 
 .priority-high {
-    border-color: #FF0000;
-    background-color: #FFF8F8;
+    border-color: #ff0000;
+    background-color: #fff8f8;
 }
 
 .priority-default {
     border-color: #808080;
-    background-color: #F8F8F8;
+    background-color: #f8f8f8;
 }
 
 /* Task Details */
@@ -315,4 +318,17 @@ ul {
     max-width: 300px;
     box-sizing: border-box;
     display: inline-block;
+}
+
+.task-content {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-wrapper {
+    width: 20px; /* Adjust as needed */
+    height: 20px; /* Adjust as needed */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
