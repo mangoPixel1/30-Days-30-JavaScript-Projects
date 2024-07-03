@@ -1,72 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo List</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://kit.fontawesome.com/47a3e61aee.js" crossorigin="anonymous"></script>
-    <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
-</head>
-<body>
-    <div id="container">
-        <h1>Tasks</h1>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Todo List</title>
+		<link rel="stylesheet" href="styles.css" />
+		<script src="https://kit.fontawesome.com/47a3e61aee.js" crossorigin="anonymous"></script>
+		<link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon" />
+		<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png" />
+	</head>
+	<body>
+		<div id="container">
+			<h1>Tasks</h1>
 
-        <div id="addNewTask">
-            <div class="input-container">
-                <input type="text" id="newTaskInput" placeholder="New task" maxlength="100" />
-                <button id="clearBtn" style="display: flex;">×</button>
-            </div>
-            <button id="addBtn">Add</button>
-        </div>
+			<div id="addNewTask">
+				<div class="input-container">
+					<input type="text" id="newTaskInput" placeholder="New task" maxlength="100" />
+					<button id="clearBtn" style="display: flex">×</button>
+				</div>
+				<button id="addBtn">Add</button>
+			</div>
 
-        <div id="newTaskOptions">
-            <p class="label">Priority</p>
-            <input type="radio" id="low-priority" name="priorityOptions" value="low">
-            <label for="low-priority">Low</label>
-            <input type="radio" id="medium-priority" name="priorityOptions" value="medium">
-            <label for="medium-priority">Medium</label>
-            <input type="radio" id="high-priority" name="priorityOptions" value="high">
-            <label for="high-priority">High</label><br><br>
+			<div id="newTaskOptions">
+				<p class="label">Priority</p>
+				<input type="radio" id="low-priority" name="priorityOptions" value="low" />
+				<label for="low-priority">Low</label>
+				<input type="radio" id="medium-priority" name="priorityOptions" value="medium" />
+				<label for="medium-priority">Medium</label>
+				<input type="radio" id="high-priority" name="priorityOptions" value="high" />
+				<label for="high-priority">High</label><br /><br />
 
-            <p class="label">Description</p>
-            <textarea id="taskDescriptionInput" class="description-input" placeholder="Write a description for this task"></textarea>
-            <span class="character-count"><span class="current-count">0</span>/200</span>
-            <br>
-            
-            <p class="label">Tags</p>
-            <input type="text" id="tagsInput" placeholder="Work, school, health, etc."><button id="addTagBtn">Add Tag</button>
-            <ul id="tagsInputList"></ul>
-        </div>
+				<p class="label">Description</p>
+				<textarea id="taskDescriptionInput" class="description-input" placeholder="Write a description for this task"></textarea>
+				<span class="character-count"><span class="current-count">0</span>/200</span>
+				<br />
 
-        <div id="toolbar">
-            <div id="expand-collapse">
-                <button id="expand-all">Expand All</button>
-                <button id="collapse-all">Collapse All</button>
-            </div>
-            <!-- Filter label and dropdown -->
-            <div id="filter-container">
-                <label for="filter-dropdown">Filter:</label>
-                <select id="filter-dropdown">
-                    <option value="">Select Priority</option>
-                    <option value="low">Low Priority</option>
-                    <option value="medium">Medium Priority</option>
-                    <option value="high">High Priority</option>
-                    <option value="default">No Priority</option>
-                </select>
-            </div>
-            <button id="reset-toolbar">Reset</button>
-        </div>
+				<p class="label">Tags</p>
+				<input type="text" id="tagsInput" placeholder="Work, school, health, etc." /><button id="addTagBtn">Add Tag</button>
+				<ul id="tagsInputList"></ul>
+			</div>
 
-        <ul id="active-tasks"></ul>
+			<div id="toolbar">
+				<div id="expand-collapse">
+					<button id="expand-all">Expand All</button>
+					<button id="collapse-all">Collapse All</button>
+				</div>
+				<!-- Filter label and dropdown -->
+				<div id="filter-container">
+					<label for="filter-dropdown">Filter:</label>
+					<select id="filter-dropdown">
+						<option value="">Select Priority</option>
+						<option value="low">Low Priority</option>
+						<option value="medium">Medium Priority</option>
+						<option value="high">High Priority</option>
+						<option value="default">No Priority</option>
+					</select>
+				</div>
+				<button id="reset-toolbar">Reset</button>
+			</div>
 
-        <hr class="divider">
+			<div id="search-container">
+				<input type="text" id="search-input" placeholder="Search by tag" style="width: 300px; height: 20px" />
+				<button id="search-button" style="height: 20px">Search</button>
+			</div>
 
-        <ul id="completed-tasks"></ul>        
-    </div>
-    
-    <script src="script.js"></script>
-</body>
+			<ul id="active-tasks"></ul>
+
+			<hr class="divider" />
+
+			<ul id="completed-tasks"></ul>
+		</div>
+
+		<script src="script.js"></script>
+	</body>
 </html>
