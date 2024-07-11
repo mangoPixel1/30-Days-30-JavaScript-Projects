@@ -24,7 +24,7 @@ const currentTags = [];
 const filteredTasks = [];
 
 // Generates a unique id by checking if the newly created id is already in use by another task
-function generateUniqueId(tasks) {
+/*function generateUniqueId(tasks) {
 	while (true) {
 		// Keep looping until a unique ID is found
 		const newId = Math.floor(Math.random() * 900000) + 100000; // 6-digit random number
@@ -33,9 +33,24 @@ function generateUniqueId(tasks) {
 		const idExists = tasks.some(task => task.id === newId);
 
 		if (!idExists) {
+			console.log(`newID: ${newId}`);
 			return newId; // Found a unique ID, return it
 		}
 	}
+}*/
+
+function generateUniqueId(tasks) {
+	const generateRandomId = () => Math.floor(Math.random() * 900000) + 100000;
+
+	const isIdUnique = id => !tasks.some(task => task.id === id);
+
+	let newId;
+	do {
+		newId = generateRandomId();
+	} while (!isIdUnique(newId));
+
+	console.log(`newID: ${newId}`);
+	return newId;
 }
 
 function addNewTask() {
@@ -100,10 +115,20 @@ const getPriorityColor = priority => priorityClassMap[priority] || "priority-def
 
 function addNewTag() {
 	const tagsInput = document.getElementById("tagsInput");
-	const tagName = tagsInput.value.trim(); // Remove unnecessary whitespace
+	const tagName = tagsInput.value.trim();
 
-	// Find invalid characters
-	const invalidChars = tagName.match(/[^a-zA-Z0-9\s-]/g);
+	// Regular expression to check if tagName meets length criteria (2 to 12 characters)
+	const tagLengthRegex = /^.{2,12}$/;
+
+	if (!tagLengthRegex.test(tagName)) {
+		alert("Tag name must be between 2 and 12 characters long.");
+		tagsInput.value = "";
+		return;
+	}
+
+	// Initialize invalidChars to hold any invalid characters found in tagName
+	// The regular expression matches any character that is not a letter, number, hyphen, or space
+	const invalidChars = tagName.match(/[^a-zA-Z0-9\-\s]/g);
 
 	if (invalidChars) {
 		const uniqueInvalidChars = [...new Set(invalidChars)].join(", ");
@@ -112,8 +137,9 @@ function addNewTag() {
 		return;
 	}
 
-	// Replace spaces with hyphens and convert to lowercase
-	const formattedTagName = tagName.replace(/\s+/g, "-").toLowerCase();
+	// Initialize formattedTagName to be the modified tag name
+	// The regular expression replaces all spaces with hyphens and converts the string to lowercase
+	const formattedTagName = tagName.replace(/\s/g, "-").toLowerCase();
 
 	if (formattedTagName !== "") {
 		// Check if the tag already exists in currentTags
@@ -125,7 +151,6 @@ function addNewTag() {
 		}
 	}
 
-	// Clear input field
 	tagsInput.value = "";
 }
 
@@ -330,12 +355,41 @@ function createTaskItem(task) {
 	});
 
 	// Create timestamp element
-	const timestamp = document.createElement("span");
+	/* DO NOT DELETE!!!!!!!!!!!    const timestamp = document.createElement("span");
 	timestamp.classList.add("timestamp");
 	timestamp.textContent = formatTimestamp(task.timeStamp);
+	taskDetails.appendChild(timestamp);*/
+
+	const timestamp = document.createElement("span");
+	timestamp.classList.add("timestamp");
+	const formattedTimeStamp = formatTimeStamp(task.timeStamp);
+	timestamp.textContent = formattedTimeStamp;
 	taskDetails.appendChild(timestamp);
 
 	return taskItem;
+}
+
+/* DO NOT DELETE!!!!!!!!!!!    function formatTimestamp(timestamp) {
+	const date = new Date(timestamp);
+	const options = {
+		dateStyle: "medium", // or 'long', 'medium', 'short'
+		timeStyle: "short" // or 'long', 'medium'
+	};
+	return date.toLocaleString(undefined, options);
+}*/
+
+function formatTimeStamp(timestamp) {
+	const options = {
+		month: "short",
+		day: "numeric",
+		year: "numeric",
+		hour: "numeric",
+		minute: "numeric",
+		hour12: true
+	};
+
+	const formattedTimeStamp = new Date(timestamp).toLocaleTimeString(undefined, options);
+	return formattedTimeStamp;
 }
 
 function handleEditButtonClick(task, taskText, editBtn) {
@@ -362,15 +416,6 @@ function handleEditButtonClick(task, taskText, editBtn) {
 			inputField.blur();
 		}
 	});
-}
-
-function formatTimestamp(timestamp) {
-	const date = new Date(timestamp);
-	const options = {
-		dateStyle: "medium", // or 'long', 'medium', 'short'
-		timeStyle: "short" // or 'long', 'medium'
-	};
-	return date.toLocaleString(undefined, options);
 }
 
 // Render the tags from currentTags array into HTML
