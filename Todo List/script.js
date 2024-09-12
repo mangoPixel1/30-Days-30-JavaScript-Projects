@@ -24,20 +24,6 @@ const currentTags = [];
 const filteredTasks = [];
 
 // Generates a unique id by checking if the newly created id is already in use by another task
-/*function generateUniqueId(tasks) {
-	while (true) {
-		// Keep looping until a unique ID is found
-		const newId = Math.floor(Math.random() * 900000) + 100000; // 6-digit random number
-
-		// Check if the ID is already in use:
-		const idExists = tasks.some(task => task.id === newId);
-
-		if (!idExists) {
-			console.log(`newID: ${newId}`);
-			return newId; // Found a unique ID, return it
-		}
-	}
-}*/
 
 function generateUniqueId(tasks) {
 	const generateRandomId = () => Math.floor(Math.random() * 900000) + 100000;

@@ -1,0 +1,233 @@
+/* Global styles from index.css */
+body {
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #f0f0f0;
+}
+header {
+	background-color: #3498db;
+	color: white;
+	padding: 20px 0;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.header-content {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 20px;
+}
+.site-name {
+	font-size: 1.5em;
+	font-weight: bold;
+}
+nav ul {
+	list-style-type: none;
+	padding: 0;
+	display: flex;
+}
+nav ul li {
+	margin-left: 20px;
+}
+nav ul li a {
+	color: white;
+	text-decoration: none;
+	transition: color 0.3s ease;
+}
+nav ul li a:hover {
+	color: #f0f0f0;
+}
+main {
+	padding: 20px;
+	display: flex;
+	justify-content: center;
+}
+h1 {
+	text-align: center;
+	color: #333;
+}
+
+/* Styles from course.html */
+main.course-main {
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+	gap: 20px;
+	max-width: 1200px;
+	margin: 0 auto;
+}
+.course-main h1 {
+	grid-column: 1 / -1;
+}
+#courseGrid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 20px;
+	padding: 20px;
+}
+@media (min-width: 768px) {
+	#courseGrid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+.course-card {
+	background-color: white;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	padding: 20px;
+	transition: transform 0.3s ease;
+	display: flex;
+	flex-direction: column;
+}
+.course-card:hover {
+	transform: translateY(-2px);
+}
+.course-name {
+	font-size: 1.2em;
+	font-weight: bold;
+	margin-bottom: 10px;
+	color: #2c3e50;
+}
+.course-description {
+	font-size: 0.9em;
+	color: #34495e;
+	margin-bottom: 15px;
+	flex-grow: 1;
+}
+.course-details {
+	font-size: 0.85em;
+	color: #7f8c8d;
+}
+.course-instructor {
+	font-style: italic;
+	color: #16a085;
+	margin-bottom: 15px;
+}
+.add-to-cart-button {
+	background-color: #3498db;
+	color: white;
+	border: none;
+	padding: 10px 15px;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+	font-size: 1em;
+	align-self: center;
+}
+.add-to-cart-button:hover {
+	background-color: #2980b9;
+}
+#cartSection {
+	background-color: white;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	min-height: 200px;
+	display: flex;
+	flex-direction: column;
+}
+#cartSection h2 {
+	color: #333;
+	margin-bottom: 10px;
+}
+.cart-item {
+	display: flex;
+	justify-content: space-between;
+	padding: 10px 0;
+	border-bottom: 1px solid #eee;
+}
+.cart-item:last-child {
+	border-bottom: none;
+}
+.cart-item-name {
+	color: #2c3e50;
+}
+.cart-item-price {
+	color: #16a085;
+	font-weight: bold;
+}
+#cartSubtotal {
+	margin-top: auto;
+	font-weight: bold;
+	text-align: right;
+	color: #2c3e50;
+}
+.cart-item-quantity {
+	color: #7f8c8d;
+	font-size: 0.9em;
+}
+
+/* Styles from contact.html */
+.site-name a {
+	color: white;
+	text-decoration: none;
+}
+.site-name a:hover {
+	color: #f0f0f0;
+}
+#cartLinkCount {
+	background-color: red;
+	color: white;
+	border-radius: 50%;
+	padding: 2px 6px;
+	font-size: 0.8em;
+	margin-left: 5px;
+	display: none;
+}
+.form-container {
+	width: 400px;
+}
+form {
+	width: 100%;
+	padding: 20px;
+	background-color: white;
+	border-radius: 5px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+label {
+	display: block;
+	margin-bottom: 10px;
+	color: #333;
+}
+input,
+textarea {
+	width: 100%;
+	padding: 10px;
+	margin-bottom: 15px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	box-sizing: border-box;
+}
+textarea {
+	resize: vertical;
+	min-height: 100px;
+}
+button {
+	background-color: #3498db;
+	color: white;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+button:hover {
+	background-color: #2980b9;
+}
+.message {
+	display: none;
+	margin-top: 20px;
+	padding: 10px;
+	border-radius: 4px;
+	text-align: center;
+	opacity: 1;
+	transition: opacity 0.5s ease-in-out;
+}
+#message-sent {
+	background-color: #d4edda;
+	color: #155724;
+}
+#message-error {
+	background-color: #f8d7da;
+	color: #721c24;
+}

@@ -1,3 +1,4 @@
+<!--
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,4 +14,64 @@
     </div>
     <script src="script.js"></script>
 </body>
+</html>
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Digital Clock</title>
+		<link rel="stylesheet" href="styles.css" />
+		<script type="text/JavaScript" src="https://MomentJS.com/downloads/moment.js"></script>
+	</head>
+	<body>
+		<div id="clock">
+			<div id="clock-day"><span class="day">Day</span>, <span class="month">Month</span> <span class="dayNum">1</span></div>
+			<div id="clock-time">00:00:00 AM</div>
+		</div>
+		<button id="lapButton">Lap</button>
+		<div id="laps"></div>
+
+		<script>
+			let laps = JSON.parse(localStorage.getItem("timeLaps")) || [];
+
+			function updateClock() {
+				let now = moment();
+				let h = now.format("HH");
+				let m = now.format("mm");
+				let s = now.format("ss");
+
+				document.querySelector(".day").textContent = now.format("dddd");
+				document.querySelector(".month").textContent = now.format("MMMM");
+				document.querySelector(".dayNum").textContent = now.format("D");
+
+				//let timeStr = `${h}:${m}:${s}`;
+				let timeStr = now.format("hh:mm:ss A"); // 12-hour with AM/PM
+				document.getElementById("clock-time").textContent = timeStr;
+
+				setTimeout(updateClock, 1000);
+			}
+
+			function lapTime() {
+				let currentTime = moment().format("HH:mm:ss");
+				if (!laps.includes(currentTime)) {
+					laps.unshift(currentTime); // Add to beginning of array
+					laps = laps.slice(0, 3); // Keep only the 3 most recent
+					localStorage.setItem("timeLaps", JSON.stringify(laps));
+					updateLapDisplay();
+				}
+			}
+
+			function updateLapDisplay() {
+				let lapDiv = document.getElementById("laps");
+				lapDiv.innerHTML = laps.map(lap => `<p>${lap}</p>`).join("");
+			}
+
+			document.getElementById("lapButton").addEventListener("click", lapTime);
+
+			updateClock();
+			updateLapDisplay();
+		</script>
+	</body>
 </html>
