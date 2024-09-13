@@ -1,0 +1,17 @@
+body {
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	background-color: #cce3de;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+header,
+footer {
+	background-color: #6b9080;
+	color: white;
+	padding: 20px 0;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

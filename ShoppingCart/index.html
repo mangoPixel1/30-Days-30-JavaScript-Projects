@@ -3,16 +3,17 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="index.css" />
 		<title>Evergreen Community Commons | Courses</title>
 	</head>
 	<body>
 		<header>
 			<div class="header-content">
-				<div class="site-name">Evergreen Community Commons</div>
+				<div class="site-name"><a href="index.html">Evergreen Community Commons</a></div>
 				<nav>
 					<ul>
 						<li><a href="index.html">Home</a></li>
-						<li><a href="#courses">Courses</a></li>
+						<li><a href="courses.html">Courses</a></li>
 						<li><a href="#about">About</a></li>
 						<li><a href="contact.html">Contact</a></li>
 					</ul>
@@ -22,7 +23,99 @@
 		<main>
 			<h1>Welcome!</h1>
 		</main>
-
+		<footer>
+			<p>
+				Contact Page &copy;
+				<script>
+					document.write(new Date().getFullYear());
+				</script>
+				Evergreen Community Commons
+			</p>
+		</footer>
 		<script src="script.js""></script>
 	</body>
 </html>
+
+
+<!-- 
+Convert this HTML to JSX. The header, main, and footer tags should be their own components. The
+
+<main>
+should be in a component called App.jsx
+
+index.html:
+
+<!DOCTYPE html> <html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="index.css" />
+<title>
+Evergreen Community Commons | Courses
+
+</title>
+</head>
+<body>
+	
+<header>
+<div>
+			<div class="site-name">
+<a>
+Evergreen Community Commons
+
+</a>
+</div>
+<nav>
+<ul>
+<li>
+<a>
+Home
+
+</a>
+</li>
+<li>
+<a>
+Courses
+
+</a>
+</li>
+<li>
+<a>
+About
+
+</a>
+</li>
+<li>
+<a>
+Contact
+
+</a>
+</li>
+</ul>
+</nav>
+		</div>
+	
+</header>
+	<main>
+		
+<h1>
+Welcome!
+
+</h1>
+</main>
+<footer>
+<p>
+			Contact Page &copy;
+			
+<script>
+				document.write(new Date().getFullYear());
+			
+</script>
+			Evergreen Community Commons
+		
+</p>
+</footer>
+<script src="script.js""></script>
+</body>
+</html>
+-->

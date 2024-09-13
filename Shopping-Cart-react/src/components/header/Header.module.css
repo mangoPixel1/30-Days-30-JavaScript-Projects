@@ -1,0 +1,35 @@
+.header {
+	background-color: #6b9080;
+	color: white;
+	padding: 20px 0;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 20px;
+}
+
+.siteName {
+	font-size: 24px;
+	font-weight: bold;
+}
+
+.nav ul {
+	list-style: none;
+	display: flex;
+	gap: 20px;
+}
+
+.nav a {
+	color: white;
+	text-decoration: none;
+}
+
+.nav a:hover {
+	text-decoration: underline;
+}
