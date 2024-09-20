@@ -28,7 +28,7 @@
 .form input,
 .form textarea {
 	padding: 0.5rem;
-	margin-bottom: 1rem;
+	margin-bottom: 0.25rem;
 	border: 1px solid #ccc;
 	border-radius: 4px;
 }
@@ -45,8 +45,37 @@
 	align-self: flex-start;
 }
 
-.sendButton:hover {
-	background-color: #5a7a6d;
+.evergreenSendButton {
+	background-color: #6b9080;
+}
+
+.cedarGroveSendButton {
+	background-color: #1a3a5e;
+}
+
+.sagebrushHillsSendButton {
+	background-color: #b39200;
+}
+
+.maplewoodParkSendButton {
+	background-color: #b34700;
+}
+
+/* New hover styles */
+.evergreenSendButton:hover {
+	background-color: #4a6658;
+}
+
+.cedarGroveSendButton:hover {
+	background-color: #0e233a;
+}
+
+.sagebrushHillsSendButton:hover {
+	background-color: #967a00;
+}
+
+.maplewoodParkSendButton:hover {
+	background-color: #953b00;
 }
 
 .message {
@@ -56,12 +85,22 @@
 	text-align: center;
 }
 
-#messageSent {
-	background-color: #d4edda;
-	color: #155724;
+.error {
+	color: #721c24;
+	font-size: 0.8em;
+	margin-top: 0;
+	margin-bottom: 0.5rem;
+	display: block;
 }
 
-#messageError {
-	background-color: #f8d7da;
+.messageSent {
+	color: #155724;
+	background-color: #d4edda;
+	border: 1px solid #c3e6cb;
+}
+
+.messageError {
 	color: #721c24;
+	background-color: #f8d7da;
+	border: 1px solid #f5c6cb;
 }

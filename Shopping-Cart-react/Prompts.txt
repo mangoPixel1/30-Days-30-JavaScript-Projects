@@ -1,25 +1,63 @@
-import React, { useState, useContext } from "react";
+I am using these color schemes in my App.css for my React web app that change based on the location selected.
+My CSS already handles changing the background colors for the body, header, and footer when the location is changed.
+What I want is to change the send button color for the contact component to match the color of the header and footer of the selected location.
+
+:root {
+	--evergreen-header-footer-bg: #6b9080;
+	--evergreen-body-bg: #cce3de;
+
+	--cedar-grove-header-footer-bg: #1a3a5e;
+	--cedar-grove-body-bg: #c5d5e4;
+
+	--sagebrush-hills-header-footer-bg: #b39200;
+	--sagebrush-hills-body-bg: #f6eac2;
+
+	--maplewood-park-header-footer-bg: #b34700;
+	--maplewood-park-body-bg: #f5deb3;
+}
+
+App.jsx:
+import React, { useState, useEffect } from "react";
+import "./App.css";
+
+// Components
+import Header from "./components/header/Header";
+import Footer from "./components/footer/Footer";
+import Contact from "./components/contact/Contact";
+
+// Context
+import LocationContext from "./LocationContext";
+
+function App() {
+	const [location, setLocation] = useState(() => {
+		// Load location from local storage, default to "cedar-grove"
+		return localStorage.getItem("location") || "cedar-grove";
+	});
+
+	useEffect(() => {
+		// Save location to local storage whenever it changes
+		localStorage.setItem("location", location);
+
+		// Apply location class to body element
+		document.body.className = location;
+	}, [location]);
+
+	return (
+		<LocationContext.Provider value={{ location, setLocation }}>
+			<Header />
+			<Contact />
+			<Footer />
+		</LocationContext.Provider>
+	);
+}
+
+export default App;
+
+Contact.jsx:
+import React, { useState } from "react";
 import styles from "./Contact.module.css";
-import LocationContext from "../../LocationContext";
 
 function Contact() {
-	const { location } = useContext(LocationContext);
-
-	const getSendButtonColor = () => {
-		switch (location) {
-			case "evergreen":
-				return styles.evergreenSendButton;
-			case "cedar-grove":
-				return styles.cedarGroveSendButton;
-			case "sagebrush-hills":
-				return styles.sagebrushHillsSendButton;
-			case "maplewood-park":
-				return styles.maplewoodParkSendButton;
-			default:
-				return styles.sendButton;
-		}
-	};
-
 	const [formData, setFormData] = useState({
 		firstName: "",
 		lastName: "",
@@ -91,7 +129,7 @@ function Contact() {
 					<textarea id="message" name="message" value={formData.message} onChange={handleChange}></textarea>
 					{errors.message && <span className={styles.error}>{errors.message}</span>}
 
-					<button type="submit" className={`${styles.sendButton} ${getSendButtonColor()}`}>
+					<button type="submit" className={styles.sendButton}>
 						Send
 					</button>
 				</form>

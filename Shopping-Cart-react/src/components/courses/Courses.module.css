@@ -1,0 +1,159 @@
+.coursesContainer {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 2rem 1rem;
+}
+
+.pageTitle {
+	font-size: 2rem;
+	font-weight: bold;
+	margin-bottom: 2rem;
+}
+
+.courseGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 1.5rem;
+}
+
+.courseCard {
+	background-color: #ffffff;
+	border-radius: 0.5rem;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	padding: 1.5rem;
+}
+
+.courseName {
+	font-size: 1.25rem;
+	font-weight: bold;
+	margin-bottom: 0.5rem;
+}
+
+.courseDescription {
+	color: #666;
+	margin-bottom: 1rem;
+}
+
+.courseSchedule {
+	display: flex;
+	align-items: center;
+	margin-bottom: 0.5rem;
+}
+
+.scheduleIcon {
+	margin-right: 0.5rem;
+}
+
+.courseFooter {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.coursePrice {
+	font-weight: bold;
+	color: #22c55e;
+}
+
+.priceIcon {
+	margin-right: 0.25rem;
+}
+
+.addToCartButton {
+	background-color: #3b82f6;
+	color: white;
+	padding: 0.5rem 1rem;
+	border-radius: 0.25rem;
+	border: none;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+.addToCartButton:hover {
+	background-color: #2563eb;
+}
+
+/* Evergreen styles */
+.evergreenCard {
+	background-color: #f0f5f3;
+}
+
+.evergreenSendButton {
+	background-color: #6b9080;
+}
+
+.evergreenPrice {
+	color: #7a9e8f;
+}
+
+/* Cedar Grove styles */
+.cedarGroveCard {
+	background-color: #e6eaf0;
+}
+
+.cedarGroveSendButton {
+	background-color: #1a3a5e;
+}
+
+.cedarGrovePrice {
+	color: #2a4a6e;
+}
+
+/* Sagebrush Hills styles */
+.sagebrushHillsCard {
+	background-color: #fdf9e6;
+}
+
+.sagebrushHillsSendButton {
+	background-color: #b39200;
+}
+
+.sagebrushHillsPrice {
+	color: #c3a210;
+}
+
+/* Maplewood Park styles */
+.maplewoodParkCard {
+	background-color: #fdf0e6;
+}
+
+.maplewoodParkSendButton {
+	background-color: #b34700;
+}
+
+.maplewoodParkPrice {
+	color: #c35710;
+}
+
+/* Hover styles */
+.evergreenSendButton:hover {
+	background-color: #4a6658;
+}
+
+.cedarGroveSendButton:hover {
+	background-color: #0e233a;
+}
+
+.sagebrushHillsSendButton:hover {
+	background-color: #967a00;
+}
+
+.maplewoodParkSendButton:hover {
+	background-color: #953b00;
+}
+
+.cartSection {
+	margin-top: 3rem;
+}
+
+.cartTitle {
+	font-size: 1.5rem;
+	font-weight: bold;
+	margin-bottom: 1rem;
+}
+
+.cartSubtotal {
+	font-size: 1.25rem;
+	font-weight: bold;
+	margin-top: 1rem;
+}

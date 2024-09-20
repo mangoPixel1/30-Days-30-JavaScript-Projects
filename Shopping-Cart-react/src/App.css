@@ -1,17 +1,65 @@
+:root {
+	--evergreen-header-footer-bg: #6b9080;
+	--evergreen-body-bg: #cce3de;
+
+	--cedar-grove-header-footer-bg: #1a3a5e;
+	--cedar-grove-body-bg: #c5d5e4;
+
+	--sagebrush-hills-header-footer-bg: #b39200;
+	--sagebrush-hills-body-bg: #f6eac2;
+
+	--maplewood-park-header-footer-bg: #b34700;
+	--maplewood-park-body-bg: #f5deb3;
+}
+
 body {
 	font-family: Arial, sans-serif;
 	margin: 0;
 	padding: 0;
-	background-color: #cce3de;
 	display: flex;
 	flex-direction: column;
 	min-height: 100vh;
 }
 
+body.evergreen-ridge {
+	background-color: var(--evergreen-body-bg);
+}
+
+body.cedar-grove {
+	background-color: var(--cedar-grove-body-bg);
+}
+
+body.sagebrush-hills {
+	background-color: var(--sagebrush-hills-body-bg);
+}
+
+body.maplewood-park {
+	background-color: var(--maplewood-park-body-bg);
+}
+
 header,
 footer {
-	background-color: #6b9080;
 	color: white;
 	padding: 20px 0;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.evergreen-ridge header,
+.evergreen-ridge footer {
+	background-color: var(--evergreen-header-footer-bg);
+}
+
+.cedar-grove header,
+.cedar-grove footer {
+	background-color: var(--cedar-grove-header-footer-bg);
+}
+
+.sagebrush-hills header,
+.sagebrush-hills footer {
+	background-color: var(--sagebrush-hills-header-footer-bg);
+}
+
+.maplewood-park header,
+.maplewood-park footer {
+	background-color: var(--maplewood-park-header-footer-bg);
 }
